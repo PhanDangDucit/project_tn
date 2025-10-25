@@ -1,11 +1,14 @@
 import { createSlice, isAnyOf } from '@reduxjs/toolkit';
 import { authApi } from './auth.services';
-import { IAuth } from '../../interfaces/types/auth/auth';
+import { IAuth, IAuthState } from '../../interfaces/types/auth/auth';
 import { IUserLogin } from '~/interfaces/types/user';
-const initialState: IAuth = {
+
+const initialState: IAuthState = {
   loggedIn: false,
   errorMessage: null,
-  currentUser: {} as IUserLogin,
+  accessToken: null,
+  currentUser: null,
+  role: null
 };
 
 const authSlice = createSlice({
@@ -17,40 +20,63 @@ const authSlice = createSlice({
       ...state,
       errorMessage: null,
     }),
-    assignNewToken: (state, action) => ({
+    assignAccessToken: (state, action) => {
+      console.log('state prev: ', state);
+      console.log('Assigning new access token:', action.payload);
+
+      return {
       ...state,
-      currentUser: {
-        ...state.currentUser,
-        token: action.payload,
-      },
-    }),
+        accessToken: action.payload,
+      }
+    },
     setAuthCurrentUser: (state, action) => ({
       ...state,
       currentUser: action.payload,
     }),
-    setBrandCurrentUser: (state, action) => ({
-      ...state,
-      currentUser: {
-        ...state.currentUser,
-        branchId: action.payload,
-      },
-    }),
+    setAuthData: (state, action) => {
+      console.log('state:', state);
+      console.log('Setting auth data with token:', action.payload);
+      return {
+        ...state,
+        accessToken: action.payload,
+      }
+    },
   },
+  /**
+   * Service fullfiled matcher to handle login response
+   */
   extraReducers: (builder) => {
     builder.addMatcher(
       isAnyOf(authApi.endpoints.login.matchFulfilled),
       (state, action) => {
         const response = action.payload;
-        if (response?.statusCode === 200) {
+        console.log('authSlice login response:', response);
+        if (response?.status == 200) {
           state.loggedIn = true;
           state.errorMessage = null;
-          if (state.currentUser) {
-            state.currentUser = response?.data.userData;
-          }
+          state.accessToken = response?.data?.accessToken;
+          state.role = "customer";
         } else {
           state.loggedIn = false;
-          state.errorMessage = response?.data?.status;
-          state.currentUser = {} as IUserLogin;
+          state.errorMessage = "Login failed. Please check your credentials.";
+          state.currentUser = null;
+        }
+      },
+    )
+    .addMatcher(
+      isAnyOf(authApi.endpoints.adminLogin.matchFulfilled),
+      (state, action) => {
+        const response = action.payload;
+        console.log('authSlice login response:', response);
+        if (response?.status == 200) {
+          state.loggedIn = true;
+          state.errorMessage = null;
+          state.accessToken = response?.data?.accessToken;
+          state.role = "admin";
+        } else {
+          state.loggedIn = false;
+          state.errorMessage = "Login failed. Please check your credentials.";
+          state.currentUser = null;
         }
       },
     );
@@ -61,8 +87,7 @@ const { reducer, actions } = authSlice;
 export const {
   logoutUser,
   clearLoginErrorMessage,
-  assignNewToken,
+  assignAccessToken,
   setAuthCurrentUser,
-  setBrandCurrentUser,
 } = actions;
 export default reducer;

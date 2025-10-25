@@ -15,27 +15,27 @@ function PrivateRoute({ allowedRoles = [] }: PrivateRouteProps) {
 
   const authorized: boolean =
     allowedRoles.length > 0
-      ? allowedRoles.some((role) => role === auth.currentUser.role)
+      ? allowedRoles.some((role) => role === auth.role)
       : true;
 
   useEffect(() => {
-    if (!auth.loggedIn || !auth.currentUser.token) {
+    if (!auth.loggedIn || !auth.accessToken) {
       Toastify('Vui lòng đăng nhập để tiếp tục', 301);
     }
-  }, [auth.loggedIn, auth.currentUser.token]);
+  }, [auth.loggedIn, auth.accessToken]);
 
-  if (!auth.loggedIn || !auth.currentUser.token) {
+  if (!auth.loggedIn || !auth.accessToken) {
     return <Navigate to="/auth/login" state={{ from: location }} replace />;
   }
 
-  if (auth.loggedIn && auth.currentUser.token) {
+  if (auth.loggedIn && auth.accessToken) {
     if (!authorized) {
       return <NotAccessible />;
     }
-    if (auth.currentUser.role === 'admin') {
+    if (auth.role === 'admin') {
       return <Outlet />;
     }
-    if (auth.currentUser.role === 'user') {
+    if (auth.role === 'customer') {
       return <Outlet />;
     }
   }

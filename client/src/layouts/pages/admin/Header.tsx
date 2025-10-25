@@ -21,26 +21,26 @@ const Header = () => {
 
   const [logout, { isLoading }] = useLogoutMutation();
   const { handleLogout: logoutHandle } = useLogoutHandler();
-  const refreshToken = useAppSelector(
-    (state: RootState) => state.auth.currentUser.refreshToken,
-  );
+  // const refreshToken = useAppSelector(
+  //   (state: RootState) => state.auth.currentUser.refreshToken,
+  // );
   const navigate = useNavigate();
 
-  const handleLogout = async () => {
-    try {
-      await logout({ refreshToken });
-      logoutHandle();
-      Toastify('Đăng xuất thành công', 201);
-      navigate('/auth/login', { replace: true });
-    } catch (error) {
-      const err = error as ILogoutError;
-      if (err.data?.message === 'Không tìm thấy session để xóa') {
-        logoutHandle();
-      } else {
-        Toastify('Đăng xuất thất bại', 400);
-      }
-    }
-  };
+  // const handleLogout = async () => {
+  //   try {
+  //     await logout({ refreshToken });
+  //     logoutHandle();
+  //     Toastify('Đăng xuất thành công', 201);
+  //     navigate('/auth/login', { replace: true });
+  //   } catch (error) {
+  //     const err = error as ILogoutError;
+  //     if (err.data?.message === 'Không tìm thấy session để xóa') {
+  //       logoutHandle();
+  //     } else {
+  //       Toastify('Đăng xuất thất bại', 400);
+  //     }
+  //   }
+  // };
 
   return (
     <div className="bg-black text-white p-4 fixed w-full top-0 flex justify-between items-center shadow-lg z-[999]">
@@ -56,11 +56,11 @@ const Header = () => {
             onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
             className="flex items-center bg-white text-black px-3 py-1 rounded-full shadow border border-gray-300"
           >
-            {auth?._id ? (
+            {auth?.id ? (
               <div className="flex items-center">
                 <div className="w-10 h-10 border border-gray-300 rounded-full overflow-hidden mr-2">
                   <img
-                    src={auth?.image}
+                    src={auth?.avatar}
                     alt="ảnh"
                     className="w-full h-full object-cover"
                   />
@@ -68,7 +68,7 @@ const Header = () => {
 
                 <div>
                   <p className="font-bold">{auth?.full_name}</p>
-                  <p className="text-xs text-black">chức vụ: {auth?.role}</p>
+                  <p className="text-xs text-black">Quản trị viên</p>
                 </div>
               </div>
             ) : (
@@ -90,7 +90,7 @@ const Header = () => {
               <ul className="py-2">
                 <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center">
                   <FaUser className="mr-2 text-black" />{' '}
-                  <Link to={`/admin/profile/${auth._id}`}>
+                  <Link to={`/admin/profile/${auth?.id}`}>
                     <p className="text-black">Profile</p>
                   </Link>
                 </li>
@@ -106,7 +106,7 @@ const Header = () => {
                 </li>
                 <Button
                   className="w-full justify-start cursor-pointer flex items-center"
-                  onClick={handleLogout}
+                  // onClick={handleLogout}
                   disabled={isLoading}
                 >
                   <FaSignOutAlt className="mr-2 text-black" />{' '}

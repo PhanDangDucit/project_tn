@@ -55,7 +55,7 @@ export default {
       {
         mytheme: {
           //dung primary text
-          primary: "#F20231",
+          primary: "#000",
           "primary-content": "#ffffff",
           secondary: "#DF0404",
           "secondary-content": "#DF0404",

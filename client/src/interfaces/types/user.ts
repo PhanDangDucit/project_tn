@@ -3,46 +3,34 @@ import { IResponse } from './response';
 
 export interface IUserLogin {
   _id?: string;
-  token: string;
-  refreshToken: string;
-  branch_id: string;
-  username: string;
-  password: string;
-  address: string;
-  full_name: string;
-  email: string;
-  phone: string;
-  status: number;
-  sex: number;
-  image: string;
-  role: string;
-  verificationCode: string | null;
-  createdAt: string;
-  updatedAt: string;
-  isOnline: boolean;
-  offlineSince: string | null;
+  username?: string;
+  password?: string;
+  address?: string;
+  full_name?: string;
+  email?: string;
+  phone?: string;
+  status?: number;
+  sex?: number;
+  avatar?: string;
+  verificationCode?: string | null;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
-export interface IUser {
-  userId: string | undefined;
-  _id?: string;
-  token: string;
-  refreshToken: string;
-  address: string;
-  username: string;
-  password: string;
-  full_name: string;
-  email: string;
-  phone: string;
-  status: number;
-  sex: number;
-  image: string;
-  role: roleUser;
-  verificationCode: string | null;
-  createdAt: string;
-  updatedAt: string;
-  isOnline: boolean;
-  offlineSince: string | null;
+export interface ICustomer {
+  id?: string;
+  avatar?: string;
+  address?: string;
+  username?: string;
+  password?: string;
+  full_name?: string;
+  email?: string;
+  phone?: string;
+  status?: number;
+  sex?: number;
+  verificationCode?: string | null;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 // interface IResponse<T> {
@@ -55,5 +43,5 @@ export interface IUser {
 //   currentPage: number;
 // }
 
-export type IUsersResponse = IResponse<IUser[]>;
-export type IUsersDetailResponse = IResponse<IUser>;
+export type IUsersResponse = IResponse<ICustomer[]>;
+export type IUsersDetailResponse = IResponse<ICustomer>;

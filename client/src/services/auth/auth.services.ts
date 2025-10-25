@@ -6,16 +6,17 @@ import type {
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import type { RootState } from '../../redux/storage/store';
 import {
-  ILoginResponse,
   IRequestPasswordReset,
   IResetPasswordRequest,
   IChangePasswordRequest, // Thêm import mới
 } from '../../interfaces/types/auth/auth';
-import { assignNewToken, logoutUser } from '../../services/auth/auth.slice';
+// import { assignNewToken, logoutUser } from '../../services/auth/auth.slice';
 import { IRequestCredentials } from './../../interfaces/types/auth/auth';
-import { IUsersDetailResponse } from '~/interfaces/types/user';
+import { ICustomer, IUsersDetailResponse } from '~/interfaces/types/user';
+import { IResponse } from '~/interfaces/types/response';
+import { assignAccessToken } from './auth.slice';
 
-const refreshTokenFetchQuery = fetchBaseQuery({
+const getMeBaseQuery = fetchBaseQuery({
   baseUrl: import.meta.env.VITE_API_URL,
   prepareHeaders: (headers, { getState }) => {
     const state = getState() as RootState & {
@@ -25,6 +26,7 @@ const refreshTokenFetchQuery = fetchBaseQuery({
     if (refreshToken) {
       headers.set('Authorization', `Bearer ${refreshToken}`);
     }
+    console.log('Headers in getMeBaseQuery:', headers);
     return headers;
   },
 });
@@ -48,37 +50,9 @@ export const baseQueryWithReauth: BaseQueryFn<
   unknown,
   FetchBaseQueryError
 > = async (args, api, extraOptions) => {
+
   let result = await baseQuery(args, api, extraOptions);
-
-  if (result.error && result.error.status === 401) {
-    const refreshToken = (
-      api.getState() as RootState & {
-        auth: { currentUser: { refreshToken: string } };
-      }
-    ).auth.currentUser?.refreshToken;
-    const refreshResult = await refreshTokenFetchQuery(
-      {
-        url: '/api/v1/auth/refresh-token',
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          Authorization: `Bearer ${refreshToken}`,
-        },
-      },
-      api,
-      extraOptions,
-    );
-
-    if (refreshResult.data) {
-      api.dispatch(assignNewToken(refreshResult.data as ILoginResponse));
-      result = await baseQuery(args, api, extraOptions);
-    } else {
-      api.dispatch(logoutUser());
-    }
-  } else if (result.error && result.error.status === 403) {
-    api.dispatch(logoutUser());
-  }
-
+  // console.log('result in api services:', result);
   return result;
 };
 
@@ -88,37 +62,27 @@ export const authApi = createApi({
   keepUnusedDataFor: 5,
   tagTypes: ['User'],
   endpoints: (builder) => ({
-    login: builder.mutation<ILoginResponse, IRequestCredentials>({
+    adminLogin: builder.mutation<IResponse<{ accessToken: string }>, IRequestCredentials>({
+      query: (credentials) => ({
+        url: '/api/v1/auth/admin/login',
+        method: 'POST',
+        body: credentials,
+      }),
+    }),
+    login: builder.mutation<IResponse<{ accessToken: string }>, IRequestCredentials>({
       query: (credentials) => ({
         url: '/api/v1/auth/login',
         method: 'POST',
         body: credentials,
       }),
     }),
-
-    register: builder.mutation<IUsersDetailResponse, FormData>({
+    register: builder.mutation<IUsersDetailResponse, ICustomer>({
       query: (formData) => ({
         url: '/api/v1/auth/register',
         method: 'POST',
         body: formData,
       }),
     }),
-
-    registerGoogle: builder.mutation<IUsersDetailResponse, FormData>({
-      query: (formData) => ({
-        url: '/api/v1/auth/register-google',
-        method: 'POST',
-        body: formData,
-      }),
-    }),
-
-    getTokenFromRefreshToken: builder.mutation<ILoginResponse, void>({
-      query: () => ({
-        url: '/api/v1/auth/refresh-token',
-        method: 'POST',
-      }),
-    }),
-
     requestPasswordReset: builder.mutation<void, IRequestPasswordReset>({
       query: (requestPasswordReset) => ({
         url: '/api/v1/auth/request-password-reset',
@@ -126,7 +90,6 @@ export const authApi = createApi({
         body: requestPasswordReset,
       }),
     }),
-
     resetPassword: builder.mutation<void, IResetPasswordRequest>({
       query: (resetPasswordRequest) => ({
         url: '/api/v1/auth/reset-password',
@@ -134,7 +97,6 @@ export const authApi = createApi({
         body: resetPasswordRequest,
       }),
     }),
-
     verifyCode: builder.mutation<
       { message: string },
       { user_id: string; code: string }
@@ -145,7 +107,6 @@ export const authApi = createApi({
         body: verifyData,
       }),
     }),
-
     // Thêm endpoint mới cho changePassword
     changePassword: builder.mutation<
       { message: string },
@@ -157,16 +118,19 @@ export const authApi = createApi({
         body: changePasswordRequest,
       }),
     }),
+    getMe: builder.query<IResponse<ICustomer>, void>({
+      query: () => `/api/v1/auth/me`,
+    })
   }),
 });
 
 export const {
+  useAdminLoginMutation,
   useLoginMutation,
   useRegisterMutation,
-  useRegisterGoogleMutation,
-  useGetTokenFromRefreshTokenMutation,
   useRequestPasswordResetMutation,
   useResetPasswordMutation,
   useVerifyCodeMutation,
   useChangePasswordMutation, // Export hook mới
+  useGetMeQuery,
 } = authApi;

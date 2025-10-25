@@ -1,20 +1,28 @@
-import { IUserLogin } from "../user";
+import { ICustomer } from "../user";
 
 export interface IAuth {
   loggedIn: boolean;
   errorMessage: string | null;
-  currentUser: IUserLogin;
+  currentUser: ICustomer;
+}
+
+export type IAuthState = {
+  loggedIn: boolean;
+  errorMessage: string | null;
+  currentUser: ICustomer | null;
+  accessToken?: string | null;
+  role?: string | null;
 }
 
 export interface IRequestCredentials {
-  username: string;
+  email: string;
   password: string;
 }
 
 export interface ILoginResponse {
   statusCode: number;
   data: {
-    userData: IUserLogin;
+    userData: ICustomer;
     status: string;
   };
 }
