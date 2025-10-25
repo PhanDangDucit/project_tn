@@ -1,16 +1,16 @@
 import React from 'react';
-import { PieChart, Pie, Cell, Tooltip, Legend } from 'recharts';
-import {
-  FaBox,
-  FaMoneyBillWave,
-  FaClipboardList,
-  FaUsers,
-  FaHourglassHalf,
-  FaCalendarCheck,
-  FaImages,
-  FaBlogger,
-  FaHome,
-} from 'react-icons/fa';
+// import { PieChart, Pie, Cell, Tooltip, Legend } from 'recharts';
+// import {
+//   FaBox,
+//   FaMoneyBillWave,
+//   FaClipboardList,
+//   FaUsers,
+//   FaHourglassHalf,
+//   FaCalendarCheck,
+//   FaImages,
+//   FaBlogger,
+//   FaHome,
+// } from 'react-icons/fa';
 // import { useGetOrdersQuery } from '~/services/order/order.services';
 // import { useGetAllUsersQuery } from '~/services/users/user.services';
 // import { useGetAppointmentsQuery } from '~/services/appointments/appointments.services';

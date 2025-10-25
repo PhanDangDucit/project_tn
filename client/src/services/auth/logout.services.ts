@@ -5,7 +5,7 @@ const logoutBaseQuery = fetchBaseQuery({
   baseUrl: import.meta.env.VITE_API_URL,
   prepareHeaders: (headers, { getState }) => {
     const state = getState() as RootState;
-    const refreshToken = state.auth?.currentUser?.refreshToken;
+    const refreshToken = state.auth?.accessToken;
     if (refreshToken) {
       headers.set('Authorization', `Bearer ${refreshToken}`);
     }

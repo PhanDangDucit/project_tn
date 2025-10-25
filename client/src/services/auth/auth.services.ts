@@ -14,22 +14,22 @@ import {
 import { IRequestCredentials } from './../../interfaces/types/auth/auth';
 import { ICustomer, IUsersDetailResponse } from '~/interfaces/types/user';
 import { IResponse } from '~/interfaces/types/response';
-import { assignAccessToken } from './auth.slice';
+// import { assignAccessToken } from './auth.slice';
 
-const getMeBaseQuery = fetchBaseQuery({
-  baseUrl: import.meta.env.VITE_API_URL,
-  prepareHeaders: (headers, { getState }) => {
-    const state = getState() as RootState & {
-      auth: { currentUser: { refreshToken: string } };
-    };
-    const refreshToken = state.auth?.currentUser?.refreshToken;
-    if (refreshToken) {
-      headers.set('Authorization', `Bearer ${refreshToken}`);
-    }
-    console.log('Headers in getMeBaseQuery:', headers);
-    return headers;
-  },
-});
+// const getMeBaseQuery = fetchBaseQuery({
+//   baseUrl: import.meta.env.VITE_API_URL,
+//   prepareHeaders: (headers, { getState }) => {
+//     const state = getState() as RootState & {
+//       auth: { currentUser: { refreshToken: string } };
+//     };
+//     const refreshToken = state.auth?.currentUser?.refreshToken;
+//     if (refreshToken) {
+//       headers.set('Authorization', `Bearer ${refreshToken}`);
+//     }
+//     console.log('Headers in getMeBaseQuery:', headers);
+//     return headers;
+//   },
+// });
 
 const baseQuery = fetchBaseQuery({
   baseUrl: import.meta.env.VITE_API_URL,

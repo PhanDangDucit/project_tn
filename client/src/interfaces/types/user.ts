@@ -1,4 +1,3 @@
-import { roleUser } from '~/interfaces/enum/roleUser';
 import { IResponse } from './response';
 
 export interface IUserLogin {

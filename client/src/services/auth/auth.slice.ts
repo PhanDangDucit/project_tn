@@ -1,7 +1,8 @@
 import { createSlice, isAnyOf } from '@reduxjs/toolkit';
 import { authApi } from './auth.services';
-import { IAuth, IAuthState } from '../../interfaces/types/auth/auth';
-import { IUserLogin } from '~/interfaces/types/user';
+// import { IAuth, IAuthState } from '../../interfaces/types/auth/auth';
+import { IAuthState } from '../../interfaces/types/auth/auth';
+// import { IUserLogin } from '~/interfaces/types/user';
 
 const initialState: IAuthState = {
   loggedIn: false,

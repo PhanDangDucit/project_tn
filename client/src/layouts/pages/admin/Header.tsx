@@ -7,24 +7,25 @@ import {
   FaUser,
   FaBell as FaBellOutline,
 } from 'react-icons/fa';
-import { Link, useNavigate } from 'react-router-dom';
-import { Toastify } from '~/helpers/Toastify';
+// import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+// import { Toastify } from '~/helpers/Toastify';
 import { useAppSelector } from '~/hooks/HookRouter';
-import { useLogoutHandler } from '~/hooks/useLogoutHandler';
-import { ILogoutError } from '~/interfaces/types/auth/auth';
+// import { useLogoutHandler } from '~/hooks/useLogoutHandler';
+// import { ILogoutError } from '~/interfaces/types/auth/auth';
 import { RootState } from '~/redux/storage/store';
-import { useLogoutMutation } from '~/services/auth/logout.services';
+// import { useLogoutMutation } from '~/services/auth/logout.services';
 
 const Header = () => {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const auth = useAppSelector((state: RootState) => state.auth.currentUser);
 
-  const [logout, { isLoading }] = useLogoutMutation();
-  const { handleLogout: logoutHandle } = useLogoutHandler();
+  // const [logout, { isLoading }] = useLogoutMutation();
+  // const { handleLogout: logoutHandle } = useLogoutHandler();
   // const refreshToken = useAppSelector(
   //   (state: RootState) => state.auth.currentUser.refreshToken,
   // );
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   // const handleLogout = async () => {
   //   try {
@@ -107,7 +108,7 @@ const Header = () => {
                 <Button
                   className="w-full justify-start cursor-pointer flex items-center"
                   // onClick={handleLogout}
-                  disabled={isLoading}
+                  // disabled={isLoading}
                 >
                   <FaSignOutAlt className="mr-2 text-black" />{' '}
                   <p className="text-black">Log out</p>
