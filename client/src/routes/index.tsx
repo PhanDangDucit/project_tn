@@ -6,6 +6,13 @@ import DefaultLayout from '../layouts/DefaultLayout';
 import PrivateRoute from './private/PrivateRoute/PrivateRoute';
 import { ROLE } from '~/constants';
 import { NotLoggedMiddleware } from './private/middleware/MiddlewareRoute';
+import { ProductCategoryManager } from '~/pages/admin/ProductCategoryManager';
+import { ProductManager } from '~/pages/admin/ProductManager';
+import { PostManager } from '~/pages/admin/PostManager';
+import { PostCategoryManager } from '~/pages/admin/PostCategoryManager';
+import { CustomerManager } from '~/pages/admin/CustomerManager';
+import { ContactManager } from '~/pages/admin/ContactManager';
+import { OrderManager } from '~/pages/admin/OrderManager';
 const AdminLayout = lazy(() => import('../layouts/pages/admin/AdminLayout'));
 const AdminDashboardPage = lazy(() => import('../pages/admin/AdminDashboardPage'));
 const AdminLoginPage = lazy(() => import('../pages/admin/AdminLoginPage'));
@@ -41,10 +48,34 @@ export default function AppRoutes() {
         >
           <Route element={<AdminLayout />}>
             <Route index element={<AdminDashboardPage />} />
-            {/* <Route
-              path="/dashboard"
-              element={<AdminDashboardPage/>}
-            /> */}
+            <Route
+              path="product-categories"
+              element={<ProductCategoryManager/>}
+            />
+            <Route
+              path="products"
+              element={<ProductManager/>}
+            />
+            <Route
+              path="customers"
+              element={<CustomerManager/>}
+            />
+            <Route
+              path="post-categories"
+              element={<PostCategoryManager/>}
+            />
+            <Route
+              path="posts"
+              element={<PostManager/>}
+            />
+            <Route
+              path="contacts"
+              element={<ContactManager/>}
+            />
+            <Route
+              path="orders"
+              element={<OrderManager/>}
+            />
           </Route>
         </Route>
       </Route>

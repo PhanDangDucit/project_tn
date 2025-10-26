@@ -32,15 +32,5 @@ export interface ICustomer {
   updatedAt?: string;
 }
 
-// interface IResponse<T> {
-//   status: number;
-//   message: string;
-//   length: number;
-//   data: T;
-//   total: number;
-//   totalPages: number;
-//   currentPage: number;
-// }
-
 export type IUsersResponse = IResponse<ICustomer[]>;
 export type IUsersDetailResponse = IResponse<ICustomer>;
