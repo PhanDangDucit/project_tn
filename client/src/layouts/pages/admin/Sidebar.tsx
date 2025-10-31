@@ -1,12 +1,9 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FaUsers, FaShoppingCart, FaBook } from 'react-icons/fa';
-import { MdMapsHomeWork } from 'react-icons/md';
 import { FaHome } from 'react-icons/fa';
-import { FaCalendarAlt } from 'react-icons/fa';
 import { MdPayments } from 'react-icons/md';
 import { RiBillFill } from 'react-icons/ri';
-import { FaGift } from 'react-icons/fa';
 import { MdContactPhone } from 'react-icons/md';
 
 const Sidebar = () => {
