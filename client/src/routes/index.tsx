@@ -15,6 +15,8 @@ import { ContactManager } from '~/pages/admin/ContactManager';
 import { OrderManager } from '~/pages/admin/OrderManager';
 import { AboutPage } from '~/pages/customers/About';
 import { ContactPage } from '~/pages/customers/Contact';
+import { NewsPage } from '~/pages/customers/News';
+import { PostCategoriesPage } from '~/pages/customers/PostCategories';
 const AdminLayout = lazy(() => import('../layouts/pages/admin/AdminLayout'));
 const AdminDashboardPage = lazy(() => import('../pages/admin/AdminDashboardPage'));
 const AdminLoginPage = lazy(() => import('../pages/admin/AdminLoginPage'));
@@ -34,6 +36,8 @@ export default function AppRoutes() {
         <Route path="/" element={<HomePage />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/contact" element={<ContactPage />} />
+        <Route path="/posts/:name" element={<NewsPage />} />
+        <Route path="/post-categories" element={<PostCategoriesPage />} />
         <Route element={<NotLoggedMiddleware />}>
           <Route path="login" element={<LoginPage />} />
           <Route path="register" element={<RegisterPage />} />
