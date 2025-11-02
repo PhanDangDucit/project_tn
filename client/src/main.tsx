@@ -10,7 +10,7 @@ import './i18n';
 import LoadingPage from './components/loading/LoadingPage';
 import { PersistGate } from 'redux-persist/integration/react';
 import reduxStore, { persistor } from './redux/storage/store';
-import ErrorBoundary from './components/orther/error/ErrorBoundary';
+import ErrorBoundary from './components/ErrorBoundary';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
