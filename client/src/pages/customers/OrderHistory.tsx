@@ -1,120 +1,88 @@
 import React, { useState } from 'react';
-import { useForm, SubmitHandler } from 'react-hook-form';
-import { Link } from 'react-router-dom';
-import { LabelForm } from '~/components/auth/index';
-import { IRequestCredentials } from '~/interfaces/types/auth/auth';
-import { Toastify } from '~/helpers/Toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { Logo } from '~/assets/images';
+
+import { ProfileSidebar } from '~/layouts/pages/user/ProfileSidebar';
+import { FaEdit, FaTrash } from 'react-icons/fa';
+import { Eye } from 'lucide-react';
 
 export const OrderHistory: React.FC<object> = () => {
   const [err, setErr] = useState(false);
+  const [orderStatus, setOrderStatus] = useState<string>("pending");
   
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<IRequestCredentials>();
-
-  const onSubmit: SubmitHandler<IRequestCredentials> = async function (data) {
-   
-  };
+  const handleClickOrderStatus = (e: React.MouseEvent<HTMLLIElement>, type: string = "pending") => {
+    setOrderStatus(type);
+  }
 
   return (
-      <div className='flex flex-wrap'>
-        <div className='w-1/2 relative'>
-          <img src={Logo} alt="banner_intro" className='w-full h-full object-cover' />
+      <div className='flex flex-wrap py-20 max-w-[1200px] mx-auto'>
+        <div className='w-3/12 relative'>
+          <ProfileSidebar/>
         </div>
-        <div className="sm:max-w-[504px] w-1/2">
-            <div className="mx-auto flex max-w-[342px] flex-col items-center gap-4 sm:mx-0 sm:max-w-full sm:items-start sm:gap-7">
-              <div className="flex items-center justify-center gap-4">
-                <img width={160} src={Logo} alt="" />
-              </div>
-              <h1 className="block text-center text-[24px] font-semibold leading-6 text-primary sm:hidden">
-                Đăng nhập
-              </h1>
-              <p className="text-[16px] font-normal leading-[25.6px] dark:text-white sm:text-[20px] sm:leading-[32px]">
-                Vui lòng đăng nhập để tiếp tục
-              </p>
-            </div>
-            <div className="mx-0 mt-2 flex w-full min-w-0 flex-col gap-6 sm:mx-auto sm:max-w-[388px] sm:gap-12">
-              <form onSubmit={handleSubmit(onSubmit)}>
-                <div className="flex w-full mb-2">
-                  {err && (
-                    <div className="text-[#e53e3e] bg-red-300 px-4 py-2">
-                      Sai tài khoản hoặc mật khẩu hoặc mật khẩu
-                    </div>
-                  )}
-                </div>
-                <div className="flex w-full flex-col gap-6">
-                  <div className="flex w-full flex-col gap-2">
-                    <LabelForm title="Email" />
-                    <input
-                      className='p-4 outline-1 outline-black'
-                      placeholder="Nhập Email"
-                      {...register('email', {
-                        required: 'Vui lòng nhập Email',
-                      })}
-                      type="text"
-                      name="email"
-                    />
-                    {errors?.email && (
-                      <div className="text-[#e53e3e]">
-                        {errors?.email?.message}
-                      </div>
-                    )}
-                  </div>
-                  <div className="flex w-full flex-col gap-2">
-                    <LabelForm title="Mật khẩu" />
-                    <input
-                      className='p-4 outline-1 outline-black'
-                      placeholder="Nhập mật khẩu"
-                      {...register('password', {
-                        required: 'Vui lòng nhập mật khẩu',
-                      })}
-                      type="password"
-                      name="password"
-                    />
-                    {errors?.password && (
-                      <div className="text-[#e53e3e]">
-                        {errors?.password?.message}
-                      </div>
-                    )}
-                  </div>
-                 
-      
-                  <button
-                    type="submit"
-                    className="text-white bg-black hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-lg w-full px-5 py-2.5 text-center disabled:opacity-50 cursor-pointer"
-                    disabled={isLoading}
-                  >
-                    {isLoading ? 'Đang đăng nhập...' : 'Đăng nhập'}
-                  </button>
-                </div>
-              </form>
-              <div className="flex justify-between text-center text-xl leading-7">
-                <Link
-                  className="self-end text-lg leading-4 text-primary hover:underline text-blue-600 hover:text-blue-800"
-                  to="/register"
-                >
-                  Đăng ký
-                </Link>
-                <Link
-                  className="self-end text-lg leading-4 text-primary hover:underline text-blue-600 hover:text-blue-800"
-                  to="/request-password-reset"
-                >
-                  Quên mật khẩu?
-                </Link>
-              </div>
-              <div className="flex justify-end text-center text-xl leading-7">
-                <Link
-                  className="self-end text-lg leading-4 text-primary hover:underline text-blue-600 hover:text-blue-800"
-                  to="/auth/policy"
-                >
-                  Chính sách
-                </Link>
-              </div>
-            </div>
+        <div className="w-9/12 flex flex-col gap-4">
+          {/* Top */}
+          <div className='flex flex-col gap-4'>
+            <h1 className='font-bold text-3xl'>Lịch sử đơn hàng</h1>
+            <ul className='grid grid-cols-4 bg-black py-4'>
+              <li 
+                className={orderStatus == "pending" ? "font-bold text-xl" : ""} 
+                onClick={e => handleClickOrderStatus(e, "pending")}
+              >
+                <p className='border-r-[1px] text-white px-3 text-center cursor-pointer'>Đang xử lý</p>
+              </li>
+              <li 
+                className={orderStatus == "delivering" ? "font-bold text-xl" : ""} 
+                onClick={e => handleClickOrderStatus(e, "delivering")}
+              >
+                <p className='border-r-[1px] text-white px-3 text-center cursor-pointer'>Đang giao hàng</p>
+              </li>
+              <li 
+                className={orderStatus == "received" ? "font-bold text-xl" : ""} 
+                onClick={e => handleClickOrderStatus(e, "received")}
+              >
+                <p className='border-r-[1px] text-white px-3 text-center cursor-pointer'>Đã nhận</p>
+              </li>
+              <li 
+                className={orderStatus == "canceled" ? "font-bold text-xl" : ""} 
+                onClick={e => handleClickOrderStatus(e, "canceled")}
+              >
+                <p className='border-r-[1px] text-white px-3 text-center cursor-pointer'>Đã hủy</p>
+              </li>
+            </ul>
+          </div>
+          {/* Table */}
+          <table className="w-full">
+            <thead className="">
+                <th>ID</th>
+                <th>Số lượng</th>
+                <th>Tổng tiền</th>
+                <th>Thanh toán</th>
+                <th>Thời gian đặt</th>
+                <th>Hành động</th>
+            </thead>
+            <tbody>
+                <tr>
+                  <td className='text-center'>21312</td>
+                  <td className='text-center'>csadca</td>
+                  <td className='text-center'>csadca</td>
+                  <td className='text-center'>csadca</td>
+                  <td className='text-center'>csadca</td>
+                  <td className="px-4 py-3 flex items-center justify-center space-x-2 mt-2">
+                    <button
+                    // onClick={() => handleDeleteClick(product._id!)}
+                    className="bg-green-600 text-white px-3 py-1 rounded flex items-center"
+                    >
+                        <Eye className="mr-1" /> Xem
+                    </button>
+                    <button
+                        // onClick={() => handleEditClick(product)}
+                        className="bg-red-600 text-white px-3 py-1 rounded flex items-center"
+                    >
+                        <FaEdit className="mr-1" /> Hủy
+                    </button>
+                  </td>
+                </tr>
+            </tbody>
+          </table>
         </div>
       </div>
   );

@@ -55,6 +55,7 @@ export function Header({ cartOverlayOpen, onCartClick }: { cartOverlayOpen: bool
 
       {/* Navigation */}
       <Navigation />
+     
     </>
   );
 }
