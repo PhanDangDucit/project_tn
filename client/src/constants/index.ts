@@ -5,6 +5,6 @@ export const gioitinh = [
 ];
 
 export enum ROLE {
-  USER = 'user',
+  CUSTOMER = 'customer',
   ADMIN = 'admin',
 }

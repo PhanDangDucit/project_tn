@@ -1,6 +1,6 @@
 import React from 'react';
-import Header from '../../components/header/Header';
-import Footer from '../../components/footer/Footer';
+import Header from '../../components/customers/Header';
+import Footer from '../../components/customers/Footer';
 import LoadingLocal from '~/components/loading/LoadingLocal';
 import {
   useGetBlogsQuery

@@ -17,6 +17,10 @@ import { AboutPage } from '~/pages/customers/About';
 import { ContactPage } from '~/pages/customers/Contact';
 import { NewsPage } from '~/pages/customers/News';
 import { PostCategoriesPage } from '~/pages/customers/PostCategories';
+import ProductCategoryPage from '~/pages/customers/ProductCategory';
+import ProductDetail from '~/pages/customers/ProductDetail';
+import ShoppingCart from '~/pages/customers/ShoppingCart';
+import UserLayout from '~/layouts/pages/user/UserLayout';
 const AdminLayout = lazy(() => import('../layouts/pages/admin/AdminLayout'));
 const AdminDashboardPage = lazy(() => import('../pages/admin/AdminDashboardPage'));
 const AdminLoginPage = lazy(() => import('../pages/admin/AdminLoginPage'));
@@ -32,15 +36,23 @@ export default function AppRoutes() {
   return (
     <Routes>
       {/* customer */}
-      <Route element={<DefaultLayout />}>
+      <Route element={<UserLayout />}>
         <Route path="/" element={<HomePage />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/posts/:name" element={<NewsPage />} />
         <Route path="/post-categories" element={<PostCategoriesPage />} />
+        <Route path="/category/:category" element={<ProductCategoryPage />} />
+        <Route path="/product/:id" element={<ProductDetail />} />
         <Route element={<NotLoggedMiddleware />}>
           <Route path="login" element={<LoginPage />} />
           <Route path="register" element={<RegisterPage />} />
+        </Route>
+        <Route
+          path="/"
+          element={<PrivateRoute allowedRoles={[ROLE.CUSTOMER]} />}
+        >
+          <Route path="/cart" element={<ShoppingCart />} />
         </Route>
         {/* <Route path="/scan-image" element={<ScanImage />} /> */}
       </Route>
