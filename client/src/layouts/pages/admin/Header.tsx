@@ -19,7 +19,7 @@ import { RootState } from '~/redux/storage/store';
 const Header = () => {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const auth = useAppSelector((state: RootState) => state.auth.currentUser);
-
+  console.log("auth:: ", auth);
   // const [logout, { isLoading }] = useLogoutMutation();
   // const { handleLogout: logoutHandle } = useLogoutHandler();
   // const refreshToken = useAppSelector(

@@ -1,11 +1,13 @@
-import { Heart, Search, ShoppingBag, User } from 'lucide-react';
+import { Heart, Search, ShoppingBag } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
 import { Navigation } from './Navigation';
+import { UserDropDown } from './UserDropDown';
+import { Logo } from '~/assets/images';
+import { Link } from 'react-router-dom';
 
 export function Header({ cartOverlayOpen, onCartClick }: { cartOverlayOpen: boolean; onCartClick: () => void }) {
   const { cartCount } = useCart();
-  console.log("cartOverlayOpen", cartOverlayOpen);
-
+  
   return (
     <>
       {/* Header */}
@@ -13,9 +15,9 @@ export function Header({ cartOverlayOpen, onCartClick }: { cartOverlayOpen: bool
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             {/* Logo */}
-            <a href="/" className="flex items-center hover:opacity-80 transition">
-              <img src="/logo.png" alt="Fitness Store" className="h-12 w-auto" />
-            </a>
+            <Link to="/" className="flex items-center hover:opacity-80 transition">
+              <img src={Logo} alt="Fitness Store" className="h-12 w-auto" />
+            </Link>
 
             {/* Search Bar */}
             <div className="flex-1 max-w-xl mx-8">
@@ -34,9 +36,11 @@ export function Header({ cartOverlayOpen, onCartClick }: { cartOverlayOpen: bool
               <button className="p-2 hover:bg-gray-100 rounded-lg transition">
                 <Heart className="w-5 h-5" />
               </button>
-              <button className="p-2 hover:bg-gray-100 rounded-lg transition">
-                <User className="w-5 h-5" />
-              </button>
+
+            {/* User / Auth dropdown */}
+              <UserDropDown/>
+
+              {/* Cart */}
               <button
                 onClick={onCartClick}
                 className="p-2 hover:bg-gray-100 rounded-lg transition relative"

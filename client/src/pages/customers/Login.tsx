@@ -37,14 +37,14 @@ const LoginPage: React.FC<object> = () => {
   };
 
   return (
-      <div className='flex flex-wrap'>
+      <div className='flex flex-wrap max-w-[1200px] mx-auto py-20'>
         <div className='w-1/2 relative'>
-          <img src={Logo} alt="banner_intro" className='w-full h-full object-cover' />
+          <img src={"https://icado.vn/wp-content/uploads/2023/08/Fitness-La-Gi-Cach-Dat-Duoc-Body-Fitness-Nhanh-Nhat-5.webp"} alt="banner_intro" className='w-full h-full object-cover' />
         </div>
         <div className="sm:max-w-[504px] w-1/2">
             <div className="mx-auto flex max-w-[342px] flex-col items-center gap-4 sm:mx-0 sm:max-w-full sm:items-start sm:gap-7">
               <div className="flex items-center justify-center gap-4">
-                <img width={160} src={Logo} alt="" />
+                <img width={160} src={Logo} alt="logo" />
               </div>
               <h1 className="block text-center text-[24px] font-semibold leading-6 text-primary sm:hidden">
                 Đăng nhập

@@ -17,12 +17,12 @@ export const logoutApi = createApi({
   reducerPath: 'logoutApi',
   baseQuery: logoutBaseQuery,
   endpoints: (builder) => ({
-    logout: builder.mutation<void, { refreshToken: string }>({
-      query: ({ refreshToken }) => ({
+    logout: builder.mutation<void, { accessToken: string }>({
+      query: ({ accessToken }) => ({
         url: '/api/v1/auth/logout',
         method: 'POST',
         headers: {
-          Authorization: `Bearer ${refreshToken}`,
+          Authorization: `Bearer ${accessToken}`,
         },
       }),
     }),
