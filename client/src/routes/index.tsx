@@ -50,7 +50,6 @@ export default function AppRoutes() {
         <Route path="/product/:id" element={<ProductDetail />} />
         
         <Route path="/order-history" element={<OrderHistory />} />
-        <Route path="/profile" element={<Profile />} />
         <Route path="/update-profile" element={<UpdateProfile />} />
         <Route path="/change-pasword" element={<ChangePassword />} />
         <Route path="/cart" element={<ShoppingCart />} />
@@ -68,6 +67,8 @@ export default function AppRoutes() {
           <Route path="/update-profile" element={<UpdateProfile />} />
           <Route path="/change-pasword" element={<ChangePassword />} />
           <Route path="/cart" element={<ShoppingCart />} /> */}
+          <Route path="/profile" element={<Profile />} />
+
         </Route>
         {/* <Route path="/scan-image" element={<ScanImage />} /> */}
       </Route>

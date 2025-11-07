@@ -1,10 +1,16 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { Heart, Share2, ChevronLeft, Check } from 'lucide-react';
+import { Share2, ChevronLeft, Check } from 'lucide-react';
 import { useState } from 'react';
 import { useCart } from '../../context/CartContext';
 import { allProducts } from '../../../db/products';
+import ProductEmpty from '~/components/customers/product/ProductEmpty';
+import { useAppSelector } from '~/hooks/HookRouter';
+import { RootState } from '~/redux/storage/store';
+import { Toastify } from '~/helpers/Toastify';
+import ProductRelated from '~/components/customers/product/ProductRelated';
 
 export default function ProductDetail() {
+  const auth = useAppSelector((state: RootState) => state.auth);
   const { id } = useParams();
   const navigate = useNavigate();
   const { addToCart } = useCart();
@@ -14,23 +20,32 @@ export default function ProductDetail() {
 
   const product = allProducts.find(p => p.id === Number(id));
 
-  if (!product) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold mb-4">Không tìm thấy sản phẩm</h1>
-          <button
-            onClick={() => navigate('/')}
-            className="px-6 py-2 bg-black text-white rounded-full hover:bg-gray-800"
-          >
-            Quay về trang chủ
-          </button>
-        </div>
-      </div>
-    );
+  const handleAddToCart = (e: React.MouseEvent<HTMLButtonElement>) => {
+    if(!auth.loggedIn) {
+      Toastify('Vui lòng đăng nhập để tiếp tục', 400);
+      navigate('/login');
+      return;
+    } else if (!selectedSize) {
+      Toastify('Vui lòng chọn size/loại sản phẩm', 301);
+      return;
+    }
+    addToCart({
+      id: product?.id!,
+      name: product?.name!,
+      price: product?.price,
+      image: product?.image,
+      size: selectedSize,
+      quantity,
+    });
+    setAddedToCart(true);
+    setTimeout(() => setAddedToCart(false), 2000);
   }
 
-  const relatedProducts = allProducts.filter(p => p.id !== product.id).slice(0, 8);
+  if (!product) {
+    return (
+      <ProductEmpty/>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-white">
@@ -39,7 +54,7 @@ export default function ProductDetail() {
           onClick={() => navigate('/')}
           className="flex items-center gap-2 text-sm hover:underline mb-6"
         >
-          <ChevronLeft className="w-4 h-4" />
+          <ChevronLeft className="w-4 h-4" /> 
           Quay lại
         </button>
 
@@ -74,9 +89,9 @@ export default function ProductDetail() {
             </div>
 
             <div className="flex gap-4">
-              <button className="p-3 border border-gray-300 rounded-full hover:bg-gray-50 transition">
+              {/* <button className="p-3 border border-gray-300 rounded-full hover:bg-gray-50 transition">
                 <Heart className="w-5 h-5" />
-              </button>
+              </button> */}
               <button className="p-3 border border-gray-300 rounded-full hover:bg-gray-50 transition">
                 <Share2 className="w-5 h-5" />
               </button>
@@ -144,22 +159,7 @@ export default function ProductDetail() {
             </div>
 
             <button
-              onClick={() => {
-                if (!selectedSize) {
-                  alert('Vui lòng chọn size/loại sản phẩm');
-                  return;
-                }
-                addToCart({
-                  id: product.id,
-                  name: product.name,
-                  price: product.price,
-                  image: product.image,
-                  size: selectedSize,
-                  quantity,
-                });
-                setAddedToCart(true);
-                setTimeout(() => setAddedToCart(false), 2000);
-              }}
+              onClick={e => handleAddToCart(e)}
               className={`w-full py-4 rounded-full font-semibold transition flex items-center justify-center gap-2 ${
                 addedToCart
                   ? 'bg-green-600 text-white hover:bg-green-700'
@@ -190,47 +190,7 @@ export default function ProductDetail() {
         </div>
         
         {/* Sản phẩm tương tự */}
-        <div className="border-t border-gray-200 pt-16">
-          <div className="mb-8">
-            <h2 className="font-bold text-2xl mb-2">SẢN PHẨM TƯƠNG TỰ</h2>
-            <p className="text-sm text-gray-600">Khám phá thêm các sản phẩm phù hợp</p>
-          </div>
-
-          <div className="grid grid-cols-2 md:grid-cols-4! gap-6">
-            {relatedProducts.map((relatedProduct) => (
-              <div
-                key={relatedProduct.id}
-                onClick={() => {
-                  navigate(`/product/${relatedProduct.id}`);
-                  window.scrollTo(0, 0);
-                }}
-                className="group cursor-pointer"
-              >
-                <div className="relative bg-gray-200 aspect-square rounded-lg mb-4 overflow-hidden">
-                  <img
-                    src={relatedProduct.image}
-                    alt={relatedProduct.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                    }}
-                    className="absolute top-3 right-3 p-2 bg-white rounded-full opacity-0 group-hover:opacity-100 transition"
-                  >
-                    <Heart className="w-4 h-4" />
-                  </button>
-                  <span className="absolute top-3 left-3 text-xs font-semibold bg-white px-2 py-1 rounded">
-                    MỚI
-                  </span>
-                </div>
-                <h4 className="font-medium text-sm mb-1">{relatedProduct.name}</h4>
-                <p className="text-xs text-gray-600 mb-2">{relatedProduct.description}</p>
-                <p className="text-sm font-semibold">{relatedProduct.price}</p>
-              </div>
-            ))}
-          </div>
-        </div>
+        <ProductRelated product={product} />
       </div>
     </div>
   );

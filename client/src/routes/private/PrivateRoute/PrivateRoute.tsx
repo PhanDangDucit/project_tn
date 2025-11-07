@@ -25,7 +25,7 @@ function PrivateRoute({ allowedRoles = [] }: PrivateRouteProps) {
   }, [auth.loggedIn, auth.accessToken]);
 
   if (!auth.loggedIn || !auth.accessToken) {
-    return <Navigate to="/auth/login" state={{ from: location }} replace />;
+    return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
   if (auth.loggedIn && auth.accessToken) {

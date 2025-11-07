@@ -33,9 +33,9 @@ export function Header({ cartOverlayOpen, onCartClick }: { cartOverlayOpen: bool
 
             {/* Icons */}
             <div className="flex items-center gap-4">
-              <button className="p-2 hover:bg-gray-100 rounded-lg transition">
+              {/* <button className="p-2 hover:bg-gray-100 rounded-lg transition">
                 <Heart className="w-5 h-5" />
-              </button>
+              </button> */}
 
             {/* User / Auth dropdown */}
               <UserDropDown/>
