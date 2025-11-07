@@ -27,7 +27,6 @@ const UserLayout: React.FC<object> = () => {
   return (
     <div className="min-h-screen bg-white flex flex-col">
       <Header
-        cartOverlayOpen={cartOverlayOpen}
         onCartClick={handleClickCartIcon}
       />
       <div className="">

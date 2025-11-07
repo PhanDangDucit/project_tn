@@ -2,14 +2,13 @@ import React, { useState } from 'react';
 import 'react-toastify/dist/ReactToastify.css';
 
 import { ProfileSidebar } from '~/layouts/pages/user/ProfileSidebar';
-import { FaEdit, FaTrash } from 'react-icons/fa';
+import { FaEdit } from 'react-icons/fa';
 import { Eye } from 'lucide-react';
 
 export const OrderHistory: React.FC<object> = () => {
-  const [err, setErr] = useState(false);
   const [orderStatus, setOrderStatus] = useState<string>("pending");
   
-  const handleClickOrderStatus = (e: React.MouseEvent<HTMLLIElement>, type: string = "pending") => {
+  const handleClickOrderStatus = (type: string = "pending") => {
     setOrderStatus(type);
   }
 
@@ -25,25 +24,25 @@ export const OrderHistory: React.FC<object> = () => {
             <ul className='grid grid-cols-4 bg-black py-4'>
               <li 
                 className={orderStatus == "pending" ? "font-bold text-xl" : ""} 
-                onClick={e => handleClickOrderStatus(e, "pending")}
+                onClick={() => handleClickOrderStatus("pending")}
               >
                 <p className='border-r-[1px] text-white px-3 text-center cursor-pointer'>Đang xử lý</p>
               </li>
               <li 
                 className={orderStatus == "delivering" ? "font-bold text-xl" : ""} 
-                onClick={e => handleClickOrderStatus(e, "delivering")}
+                onClick={() => handleClickOrderStatus("delivering")}
               >
                 <p className='border-r-[1px] text-white px-3 text-center cursor-pointer'>Đang giao hàng</p>
               </li>
               <li 
                 className={orderStatus == "received" ? "font-bold text-xl" : ""} 
-                onClick={e => handleClickOrderStatus(e, "received")}
+                onClick={() => handleClickOrderStatus("received")}
               >
                 <p className='border-r-[1px] text-white px-3 text-center cursor-pointer'>Đã nhận</p>
               </li>
               <li 
                 className={orderStatus == "canceled" ? "font-bold text-xl" : ""} 
-                onClick={e => handleClickOrderStatus(e, "canceled")}
+                onClick={() => handleClickOrderStatus("canceled")}
               >
                 <p className='border-r-[1px] text-white px-3 text-center cursor-pointer'>Đã hủy</p>
               </li>

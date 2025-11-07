@@ -16,7 +16,7 @@ export function UserDropDown() {
   const userMenuRef = useRef<HTMLDivElement | null>(null);
   // Handle logout
   const { handleLogout: logoutHandler } = useLogoutHandler();
-  const [logout, { isLoading: isLoggingOut }] = useLogoutMutation();
+  const [logout] = useLogoutMutation();
   const navigate = useNavigate();
   const auth = useAppSelector((state: RootState) => state.auth);
   // console.log("auth in userdropdown:: ", auth);

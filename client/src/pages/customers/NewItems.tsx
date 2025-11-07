@@ -1,10 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { FaEye, FaClock } from 'react-icons/fa';
-import { IBlog } from '~/interfaces/types/blog/blog';
+import { TPost } from '~/interfaces/types/post';
 
 interface NewsItemProps {
-  blog: IBlog;
+  blog: TPost;
 }
 
 export const NewsItem: React.FC<NewsItemProps> = ({ blog }) => {
@@ -32,7 +32,7 @@ export const NewsItem: React.FC<NewsItemProps> = ({ blog }) => {
             </span>
           </div>
           <Link
-            to={`/news/${blog._id}`}
+            to={`/news/${blog.id}`}
             className="text-blue-600 font-semibold hover:underline"
           >
             Đọc thêm →

@@ -4,7 +4,7 @@ import { ICustomer } from "~/interfaces/types/user";
 import { ProfileSidebar } from "~/layouts/pages/user/ProfileSidebar"
 
 export const UpdateProfile: React.FC<object> = () => {
-    const [err, setErr] = useState(false);
+    const [err] = useState(false);
     
     const {
     register,

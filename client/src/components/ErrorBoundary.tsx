@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
 import { Button, Hero } from 'react-daisyui';
-import {
-  ErrorBoundaryProps,
-  ErrorBoundaryState,
-} from '../../../interfaces/types/error/error';
+import { ErrorBoundaryProps, ErrorBoundaryState } from '~/interfaces/types/error/error';
 
 class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   constructor(props: ErrorBoundaryProps) {

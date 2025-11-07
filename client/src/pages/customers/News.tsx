@@ -1,14 +1,5 @@
 import React from 'react';
-import Header from '../../components/customers/Header';
-import Footer from '../../components/customers/Footer';
-import LoadingLocal from '~/components/loading/LoadingLocal';
-import {
-  useGetBlogsQuery
-} from '~/services/blog/blog.services';
-import { Link } from 'react-router-dom';
-import { FaEye, FaClock } from 'react-icons/fa';
-import { NewsItem } from './NewItems';
-import { TPost } from '~/interfaces/types/post';
+import { FaEye } from 'react-icons/fa';
 
 export const NewsPage: React.FC = () => {
   // const { data, isLoading, isError } = useGetBlogsQuery();

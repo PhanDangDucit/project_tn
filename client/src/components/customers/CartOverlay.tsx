@@ -12,7 +12,7 @@ export default function CartOverlay({ isOpen, onClose }: CartOverlayProps) {
   const navigate = useNavigate();
 
   const total = cartItems.reduce((sum, item) => {
-    const price = parseFloat(item.price.replace(/\D/g, ''));
+    const price = parseFloat(item?.price!.replace(/\D/g, ''));
     return sum + price * item.quantity;
   }, 0);
 

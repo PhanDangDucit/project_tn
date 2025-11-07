@@ -7,7 +7,7 @@ export default function ShoppingCart() {
   const { cartItems, removeFromCart, updateQuantity } = useCart();
 
   const total = cartItems.reduce((sum, item) => {
-    const price = parseFloat(item.price.replace(/\D/g, ''));
+    const price = parseFloat(item?.price!.replace(/\D/g, ''));
     return sum + price * item.quantity;
   }, 0);
 

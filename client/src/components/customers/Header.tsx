@@ -1,11 +1,11 @@
-import { Heart, Search, ShoppingBag } from 'lucide-react';
+import { Search, ShoppingBag } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
 import { Navigation } from './Navigation';
 import { UserDropDown } from './UserDropDown';
 import { Logo } from '~/assets/images';
 import { Link } from 'react-router-dom';
 
-export function Header({ cartOverlayOpen, onCartClick }: { cartOverlayOpen: boolean; onCartClick: () => void }) {
+export function Header({ onCartClick }: { onCartClick: () => void }) {
   const { cartCount } = useCart();
   
   return (

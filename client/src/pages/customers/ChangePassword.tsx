@@ -6,7 +6,7 @@ type ChangePasword = {
     rePassword: string;
 }
 export const ChangePassword: React.FC<object> = () => {
-    const [err, setErr] = useState(false);
+    const [err] = useState(false);
     
     const {
     register,

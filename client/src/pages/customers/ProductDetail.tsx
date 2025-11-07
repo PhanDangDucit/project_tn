@@ -20,7 +20,7 @@ export default function ProductDetail() {
 
   const product = allProducts.find(p => p.id === Number(id));
 
-  const handleAddToCart = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleAddToCart = () => {
     if(!auth.loggedIn) {
       Toastify('Vui lòng đăng nhập để tiếp tục', 400);
       navigate('/login');
@@ -159,7 +159,7 @@ export default function ProductDetail() {
             </div>
 
             <button
-              onClick={e => handleAddToCart(e)}
+              onClick={() => handleAddToCart()}
               className={`w-full py-4 rounded-full font-semibold transition flex items-center justify-center gap-2 ${
                 addedToCart
                   ? 'bg-green-600 text-white hover:bg-green-700'
