@@ -34,7 +34,7 @@ const AdminLoginPage: React.FC<object> = () => {
   };
 
   return (
-    <div className="">
+    <div className="max-w-[1200px] mx-auto py-20">
         <div className="mx-auto flex flex-col items-center gap-4 sm:mx-0 sm:max-w-full sm:items-start sm:gap-7">
           <div className="flex items-center justify-center gap-4">
             <img width={160} src={Logo} alt="" />
