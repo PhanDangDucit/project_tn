@@ -34,7 +34,7 @@ export const productCategoriesApi = createApi({
     >({
       query: ({ id, data }) => ({
         url: `/api/v1/product-categories/${id}`,
-        method: 'PATCH',
+        method: 'PUT',
         body: data,
       }),
       invalidatesTags: ['ProductCategories'],

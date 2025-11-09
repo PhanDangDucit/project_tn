@@ -16,7 +16,7 @@ const Sidebar = () => {
   return (
     <div className="w-64 py-10 h-screen bg-black text-white p-6 overflow-y-scroll fixed leading-10 font-semibold ">
       {/* <div className="w-[90px] ml-[50px] rotate-90 ">
-        <img src="../public/images/admin/logo.jpg" alt="" />
+        <img src="../public/images/admin/logo.webp" alt="" />
       </div> */}
       <ul>
         <li className="mb-2 mt-10 w-full">

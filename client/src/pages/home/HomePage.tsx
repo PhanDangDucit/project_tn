@@ -2,8 +2,19 @@ import ProductSection from '~/components/ProductSection';
 import HeroSlider from '~/components/customers/home/HeroSlider';
 import BannerSection from '~/components/BannerSection';
 import ContentGrid from '~/components/ContentGrid';
+import { RootState } from '~/redux/storage/store';
+import { useAppSelector } from '~/hooks/HookRouter';
+import { Navigate } from 'react-router-dom';
 
 export default function HomePage() {
+  const auth = useAppSelector((state: RootState) => state.auth);
+  if (auth.loggedIn && auth.accessToken) {
+    switch (auth.role) {
+      case 'admin':
+        return <Navigate to="/admin" />;
+    }
+  }
+
   return (
     <>
 

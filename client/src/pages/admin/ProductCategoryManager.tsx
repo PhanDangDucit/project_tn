@@ -25,20 +25,27 @@ export function ProductCategoryManager() {
         formState: { errors },
     } = useForm<TProductCategory>();
 
-    // const handleEditClick = (product: Product) => {
-    //     console.log('product: ===> ', product);
-    //     setEditingProduct(product);
-    //     setShowEditPopup(true);
-    //     setImagePreview(product.image);
-    // };
+    const handleEditClick = (product: TProductCategory) => {
+        setselectedProductCategory(product);
+        setValue('name', product.name);
+        setShowModal(true);
+    };
+    
+    // handle delete product category
+    const handleDeleteProductCategory = async (id: string) => {
+        try {
+            await deleteProductCategory(id).unwrap();
+            Toastify('Xóa danh mục sản phẩm thành công', 201);
+            refetch();
+        } catch (error) {
+            const errorMessage =
+                (error as { data?: { message?: string } })?.data?.message ||
+                'Đã có lỗi xảy ra!';
+            Toastify(errorMessage, 400);
+        }
+    };
 
-    // const handleDeleteClick = (id: string) => {
-    //     console.log('productDeleteId: ', productDeleteId);
-    //     setProductDeleteId(id);
-    //     setShowConfirmPopup(true);
-    // };
-    const [selectedListProducts, setSelectedListProducts] = useState<string[]>([]);
-
+    // handle form submit
     const onSubmit = async (data: TProductCategory) => {
         const finalData = { ...data, id: selectedProductCategory };
         try {
@@ -53,7 +60,6 @@ export function ProductCategoryManager() {
                 Toastify('Thêm danh mục sản phẩm thành công', 201);
             }
             reset();
-            setSelectedListProducts([]);
             setShowModal(false);
             refetch();
         } catch (error) {
@@ -64,15 +70,12 @@ export function ProductCategoryManager() {
         }
     };
 
+    // handle click button to add product category
     const handleClickAddProductCategory = () => {
         setselectedProductCategory(null);
-        setSelectedListProducts([]);
         reset();
         setShowModal(true);
     }
-
-    console.log('productCategories: ', productCategories);
-    console.log('showModal: ', showModal);
 
     return (
         <div className="px-20 py-10">
@@ -108,16 +111,16 @@ export function ProductCategoryManager() {
                                         <tr className="text-center">
                                             <td>{category.id}</td>
                                             <td>{category?.name ?? ""}</td>
-                                            <td>{category?.created_at ?? ""}</td>
+                                            <td>{new Date(category.created_at!).toLocaleString('vi-VN')}</td>
                                             <td className="px-4 py-3 flex items-center justify-center space-x-2 mt-2">
                                                 <button
-                                                // onClick={() => handleDeleteClick(product._id!)}
-                                                className="bg-red-600 text-white px-3 py-1 rounded flex items-center"
+                                                    onClick={() => handleDeleteProductCategory(category.id!)}
+                                                    className="bg-red-600 text-white px-3 py-1 rounded flex items-center"
                                                 >
                                                     <FaTrash className="mr-1" /> Xóa
                                                 </button>
                                                 <button
-                                                    // onClick={() => handleEditClick(product)}
+                                                    onClick={() => handleEditClick(category)}
                                                     className="bg-blue-600 text-white px-3 py-1 rounded flex items-center"
                                                 >
                                                     <FaEdit className="mr-1" /> Sửa
