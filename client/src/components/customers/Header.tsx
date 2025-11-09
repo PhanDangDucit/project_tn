@@ -36,7 +36,32 @@ export function Header({ onCartClick }: { onCartClick: () => void }) {
               {/* <button className="p-2 hover:bg-gray-100 rounded-lg transition">
                 <Heart className="w-5 h-5" />
               </button> */}
-
+              <ul className="flex items-center justify-center gap-8 py-4">
+                <li>
+                  <Link
+                    to={`/about`}
+                    className="text-sm font-medium hover:text-gray-600 transition"
+                  >
+                    Giới thiệu
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to={`/post-categories`}
+                    className="text-sm font-medium hover:text-gray-600 transition"
+                  >
+                    Tin tức
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to={`/contact`}
+                    className="text-sm font-medium hover:text-gray-600 transition"
+                  >
+                    Liên hệ
+                  </Link>
+                </li>
+              </ul>
             {/* User / Auth dropdown */}
               <UserDropDown/>
 

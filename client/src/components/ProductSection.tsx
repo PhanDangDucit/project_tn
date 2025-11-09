@@ -1,19 +1,12 @@
 import { Heart, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-
-interface Product {
-  id: number;
-  name: string;
-  description: string;
-  price: string;
-  image: string;
-}
+import { TProduct } from '~/interfaces/types/product';
 
 interface ProductSectionProps {
   title: string;
   subtitle: string;
-  products: Product[];
+  products: TProduct[];
 }
 
 export default function ProductSection({ title, subtitle, products }: ProductSectionProps) {
