@@ -34,7 +34,7 @@ export const blogApi = createApi({
     >({
       query: ({ id, data }) => ({
         url: `/api/v1/news/${id}`,
-        method: 'PATCH',
+        method: 'PUT',
         body: data,
       }),
       invalidatesTags: ['News'],

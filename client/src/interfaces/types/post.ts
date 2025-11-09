@@ -2,9 +2,11 @@ export type TPost = {
   id: string;
   title: string;
   content: string;
-  image: string;
+  thumbnail: string;
   category_id: string;
-  published_date: string;
+  created_at: string;
+  updated_at: string;
   reading_time: number;
-  viewCount: number;
+  view_count: number;
+  description?: string;
 };
