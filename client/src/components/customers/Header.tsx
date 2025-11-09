@@ -1,12 +1,15 @@
 import { Search, ShoppingBag } from 'lucide-react';
-import { useCart } from '../../context/CartContext';
 import { Navigation } from './Navigation';
 import { UserDropDown } from './UserDropDown';
 import { Logo } from '~/assets/images';
 import { Link } from 'react-router-dom';
+import { useGetMeQuery } from '~/services/auth/auth.services';
+import { useGetCartDetailByCustomerIdQuery } from '~/services/cart/cart.service';
 
 export function Header({ onCartClick }: { onCartClick: () => void }) {
-  const { cartCount } = useCart();
+  const { data: userData } = useGetMeQuery();
+  const { data: cartData } = useGetCartDetailByCustomerIdQuery(userData?.data?.id!);
+  const cartCount = cartData?.data?.reduce((total, item) => total + item.quantity, 0) || 0;
   
   return (
     <>

@@ -11,6 +11,7 @@ import authSlice from '../../services/auth/auth.slice';
 import { productCategoriesApi } from '~/services/product-category/productCategories.service';
 import { productsApi } from '~/services/product/product.service';
 import { postCategoriesApi } from '~/services/post-category/post-category.service';
+import { cartDetailApi } from '~/services/cart/cart.service';
 
 const persistConfig = {
   key: 'root',
@@ -23,6 +24,7 @@ const rootReducer = combineReducers({
   [blogApi.reducerPath]: blogApi.reducer,
   [productCategoriesApi.reducerPath]: productCategoriesApi.reducer,
   [productsApi.reducerPath]: productsApi.reducer,
+  [cartDetailApi.reducerPath]: cartDetailApi.reducer,
   [postCategoriesApi.reducerPath]: postCategoriesApi.reducer,
   [logoutApi.reducerPath]: logoutApi.reducer,
   auth: authSlice,
@@ -41,6 +43,7 @@ const store = configureStore({
       productCategoriesApi.middleware,
       productsApi.middleware,
       postCategoriesApi.middleware,
+      cartDetailApi.middleware,
       logoutApi.middleware,
       rtkQueryLogger,
     ),

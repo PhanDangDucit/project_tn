@@ -1,15 +1,31 @@
 import { useNavigate } from 'react-router-dom';
 import { Trash2, Plus, Minus, ArrowLeft } from 'lucide-react';
-import { useCart } from '../../context/CartContext';
+// import { useCart } from '../../context/CartContext';
+import { useGetMeQuery } from '~/services/auth/auth.services';
+import { useDeleteCartDetailMutation, useGetCartDetailByCustomerIdQuery, useUpdateCartDetailMutation } from '~/services/cart/cart.service';
+import { useGetProductQuery } from '~/services/product/product.service';
+import { nanoid } from '@reduxjs/toolkit';
+import { Toastify } from '~/helpers/Toastify';
+import { TCartDetail } from '~/interfaces/types/cart-detail';
 
 export default function ShoppingCart() {
   const navigate = useNavigate();
-  const { cartItems, removeFromCart, updateQuantity } = useCart();
+  // const { cartItems, removeFromCart, updateQuantity } = useCart();
+   const { data: userData } = useGetMeQuery();
+    const { data: cartData } = useGetCartDetailByCustomerIdQuery(userData?.data?.id!);
+    const { data: products } = useGetProductQuery();
+    const [updateCartDetail] = useUpdateCartDetailMutation();
+    const [removeCartDetail] = useDeleteCartDetailMutation();
+  
+    const cartItems = cartData?.data?.map(cartItem => {
+      const productFiltered = products?.data?.find(product => product.id === cartItem.product_id);
+      return {
+        ...productFiltered,
+        ...cartItem
+      }
+    }) ?? [];
 
-  const total = cartItems.reduce((sum, item) => {
-    const price = parseFloat(item?.price!.replace(/\D/g, ''));
-    return sum + price * item.quantity;
-  }, 0);
+  
 
   const formatPrice = (num: number) => {
     return num.toLocaleString('vi-VN');
@@ -41,6 +57,30 @@ export default function ShoppingCart() {
       </div>
     );
   }
+  const total = cartItems?.reduce((sum, item) => {
+    const price = item?.price ?? 0;
+    const quantity = item?.quantity ?? 0;
+    return sum + price * quantity;
+  }, 0) ?? 0;
+
+  const handleInceaseQuantity = async (id: string, cartDetail: TCartDetail) => {
+    try {
+      await updateCartDetail({ id, data: { ...cartDetail, quantity: cartDetail.quantity + 1 } }).unwrap();
+    } catch (error) {
+      Toastify('Cập nhật số lượng thất bại', 400);
+    }
+  };
+  const handleDecreaseQuantity = async (id: string, cartDetail: TCartDetail) => {
+    try {
+      if(cartDetail.quantity === 1) {
+        Toastify('Cập nhật số lượng thất bại', 400);
+        return;
+      }
+      await updateCartDetail({ id, data: { ...cartDetail, quantity: cartDetail.quantity - 1 } }).unwrap();
+    } catch (error) {
+      Toastify('Cập nhật số lượng thất bại', 400);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-white">
@@ -59,12 +99,12 @@ export default function ShoppingCart() {
           {/* Cart Items */}
           <div className="lg:col-span-2 space-y-6">
             {cartItems.map((item) => (
-              <div key={`${item.id}-${item.size}`} className="border border-gray-200 rounded-lg p-6 hover:shadow-md transition">
+              <div key={nanoid()} className="border border-gray-200 rounded-lg p-6 hover:shadow-md transition">
                 <div className="flex gap-6">
                   {/* Product Image */}
                   <div
                     onClick={() => navigate(`/product/${item.id}`)}
-                    className="w-24 h-24 flex-shrink-0 bg-gray-200 rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition"
+                    className="w-24 h-24 shrink-0 bg-gray-200 rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition"
                   >
                     <img
                       src={item.image}
@@ -81,23 +121,21 @@ export default function ShoppingCart() {
                     >
                       {item.name}
                     </h3>
-                    <p className="text-sm text-gray-600 mb-2">Size: {item.size}</p>
+                    {/* <p className="text-sm text-gray-600 mb-2">Size: {item.size}</p> */}
                     <p className="font-semibold">{item.price}</p>
                   </div>
 
                   {/* Quantity Controls */}
                   <div className="flex items-center gap-3 border border-gray-300 rounded-lg px-3 py-2 h-fit">
                     <button
-                      onClick={() =>
-                        updateQuantity(item.id, item.size, Math.max(1, item.quantity - 1))
-                      }
+                      onClick={() => handleDecreaseQuantity(item?.id!, item)}
                       className="p-1 hover:bg-gray-100 rounded transition"
                     >
                       <Minus className="w-4 h-4" />
                     </button>
                     <span className="w-8 text-center font-medium">{item.quantity}</span>
                     <button
-                      onClick={() => updateQuantity(item.id, item.size, item.quantity + 1)}
+                      onClick={() => handleInceaseQuantity(item?.id!, item)}
                       className="p-1 hover:bg-gray-100 rounded transition"
                     >
                       <Plus className="w-4 h-4" />
@@ -106,7 +144,7 @@ export default function ShoppingCart() {
 
                   {/* Remove Button */}
                   <button
-                    onClick={() => removeFromCart(item.id, item.size)}
+                    onClick={() => removeCartDetail(item?.id!)}
                     className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition"
                   >
                     <Trash2 className="w-5 h-5" />

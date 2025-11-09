@@ -1,6 +1,11 @@
-import { useCart } from '../../context/CartContext';
+import { nanoid } from '@reduxjs/toolkit';
 import { X, Trash2, Plus, Minus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { Toastify } from '~/helpers/Toastify';
+import { TCartDetail } from '~/interfaces/types/cart-detail';
+import { useGetMeQuery } from '~/services/auth/auth.services';
+import { useDeleteCartDetailMutation, useGetCartDetailByCustomerIdQuery, useUpdateCartDetailMutation } from '~/services/cart/cart.service';
+import { useGetProductQuery } from '~/services/product/product.service';
 
 interface CartOverlayProps {
   isOpen: boolean;
@@ -8,13 +13,27 @@ interface CartOverlayProps {
 }
 
 export default function CartOverlay({ isOpen, onClose }: CartOverlayProps) {
-  const { cartItems, removeFromCart, updateQuantity } = useCart();
+  const { data: userData } = useGetMeQuery();
+  const { data: cartData } = useGetCartDetailByCustomerIdQuery(userData?.data?.id!);
+  const { data: products } = useGetProductQuery();
+  const [updateCartDetail] = useUpdateCartDetailMutation();
+  const [removeCartDetail] = useDeleteCartDetailMutation();
+
+  const cartItems = cartData?.data?.map(cartItem => {
+    const productFiltered = products?.data?.find(product => product.id === cartItem.product_id);
+    return {
+      ...productFiltered,
+      ...cartItem
+    }
+  }) ?? [];
+
   const navigate = useNavigate();
 
-  const total = cartItems.reduce((sum, item) => {
-    const price = parseFloat(item?.price!.replace(/\D/g, ''));
-    return sum + price * item.quantity;
-  }, 0);
+  const total = cartItems?.reduce((sum, item) => {
+    const price = item?.price ?? 0;
+    const quantity = item?.quantity ?? 0;
+    return sum + price * quantity;
+  }, 0) ?? 0;
 
   const formatPrice = (num: number) => {
     return num.toLocaleString('vi-VN');
@@ -23,6 +42,24 @@ export default function CartOverlay({ isOpen, onClose }: CartOverlayProps) {
   const handleViewCart = () => {
     navigate('/cart');
     onClose();
+  };
+  const handleInceaseQuantity = async (id: string, cartDetail: TCartDetail) => {
+    try {
+      await updateCartDetail({ id, data: { ...cartDetail, quantity: cartDetail.quantity + 1 } }).unwrap();
+    } catch (error) {
+      Toastify('Cập nhật số lượng thất bại', 400);
+    }
+  };
+  const handleDecreaseQuantity = async (id: string, cartDetail: TCartDetail) => {
+    try {
+      if(cartDetail.quantity === 1) {
+        Toastify('Cập nhật số lượng thất bại', 400);
+        return;
+      }
+      await updateCartDetail({ id, data: { ...cartDetail, quantity: cartDetail.quantity - 1 } }).unwrap();
+    } catch (error) {
+      Toastify('Cập nhật số lượng thất bại', 400);
+    }
   };
 
   return (
@@ -71,21 +108,21 @@ export default function CartOverlay({ isOpen, onClose }: CartOverlayProps) {
             <div className="space-y-4">
               {cartItems.map((item) => (
                 <div
-                  key={`${item.id}-${item.size}`}
+                  key={nanoid()}
                   className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition"
                 >
                   <div className="flex gap-4 mb-4">
                     {/* Product Image */}
                     <div
                       onClick={() => {
-                        navigate(`/product/${item.id}`);
+                        navigate(`/product/${item?.id}`);
                         onClose();
                       }}
-                      className="w-20 h-20 flex-shrink-0 bg-gray-200 rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition"
+                      className="w-20 h-20 shrink-0 bg-gray-200 rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition"
                     >
                       <img
-                        src={item.image}
-                        alt={item.name}
+                        src={item?.image}
+                        alt={item?.name}
                         className="w-full h-full object-cover"
                       />
                     </div>
@@ -94,21 +131,21 @@ export default function CartOverlay({ isOpen, onClose }: CartOverlayProps) {
                     <div className="flex-1 min-w-0">
                       <h4
                         onClick={() => {
-                          navigate(`/product/${item.id}`);
+                          navigate(`/product/${item?.id}`);
                           onClose();
                         }}
                         className="font-semibold text-sm mb-1 cursor-pointer hover:underline line-clamp-2"
                       >
-                        {item.name}
+                        {item?.name}
                       </h4>
-                      <p className="text-xs text-gray-600 mb-2">Size: {item.size}</p>
-                      <p className="font-bold text-sm">{item.price}</p>
+                      {/* <p className="text-xs text-gray-600 mb-2">Size: {item?.size}</p> */}
+                      <p className="font-bold text-sm">{item?.price}</p>
                     </div>
 
                     {/* Remove Button */}
                     <button
-                      onClick={() => removeFromCart(item.id, item.size)}
-                      className="p-1 text-red-600 hover:bg-red-50 rounded transition flex-shrink-0"
+                      onClick={() => removeCartDetail(item?.id!)}
+                      className="p-1 text-red-600 hover:bg-red-50 rounded transition shrink-0"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
@@ -117,16 +154,14 @@ export default function CartOverlay({ isOpen, onClose }: CartOverlayProps) {
                   {/* Quantity Controls */}
                   <div className="flex items-center gap-2 border border-gray-300 rounded-lg px-2 py-1 w-fit">
                     <button
-                      onClick={() =>
-                        updateQuantity(item.id, item.size, Math.max(1, item.quantity - 1))
-                      }
+                      onClick={() => handleDecreaseQuantity(item?.id!, item)}
                       className="p-1 hover:bg-gray-100 rounded transition"
                     >
                       <Minus className="w-3 h-3" />
                     </button>
-                    <span className="w-6 text-center text-sm font-medium">{item.quantity}</span>
+                    <span className="w-6 text-center text-sm font-medium">{item?.quantity ?? 1}</span>
                     <button
-                      onClick={() => updateQuantity(item.id, item.size, item.quantity + 1)}
+                      onClick={() => handleInceaseQuantity(item?.id!, item)}
                       className="p-1 hover:bg-gray-100 rounded transition"
                     >
                       <Plus className="w-3 h-3" />

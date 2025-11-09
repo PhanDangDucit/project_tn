@@ -11,12 +11,18 @@ import ProductRelated from '~/components/customers/product/ProductRelated';
 import { useGetProductQuery } from '~/services/product/product.service';
 import { TProduct } from '~/interfaces/types/product';
 import { useGetProductCategoriesQuery } from '~/services/product-category/productCategories.service';
+import { useCreateCartDetailMutation } from '~/services/cart/cart.service';
+import { useGetMeQuery } from '~/services/auth/auth.services';
 
 export default function ProductDetail() {
   const auth = useAppSelector((state: RootState) => state.auth);
+  const { data: userData } = useGetMeQuery();
+  
   const { id } = useParams();
   const navigate = useNavigate();
   // const { addToCart } = useCart();
+  const [addProductToCart] =
+    useCreateCartDetailMutation();
   // const [selectedSize, setSelectedSize] = useState<string>('');
   const [quantity, setQuantity] = useState(1);
   const [addedToCart, setAddedToCart] = useState(false);
@@ -44,25 +50,34 @@ export default function ProductDetail() {
     }
   }, [product, productCategories]);
 
-  const handleAddToCart = () => {
+  // const formatPrice = (num: number) => {
+  //   return num.toLocaleString('vi-VN');
+  // };
+
+  const handleAddToCart = async() => {
     if(!auth.loggedIn) {
       Toastify('Vui lòng đăng nhập để tiếp tục', 400);
       navigate('/login');
       return;
     }
-    // } else if (!selectedSize) {
-    //   Toastify('Vui lòng chọn size/loại sản phẩm', 301);
-    //   return;
-    // }
-    // addToCart({
-    //   id: product?.id!,
-    //   name: product?.name!,
-    //   price: product?.price,
-    //   image: product?.image,
-    //   size: selectedSize,
-    //   quantity,
-    // });
-    setAddedToCart(true);
+    console.log('Adding to cart', {
+      product_id: product?.id!,
+      quantity,
+      customer_id: userData?.data?.id!,
+    });
+    try {
+      await addProductToCart({
+        product_id: product?.id!,
+        quantity,
+        customer_id: userData?.data?.id!,
+      }).unwrap();
+      setAddedToCart(true);
+    } catch (error) {
+      Toastify('Thêm sản phẩm vào giỏ hàng thất bại', 400);
+      return;
+    }
+    Toastify('Thêm sản phẩm vào giỏ hàng thành công', 201);
+
     setTimeout(() => setAddedToCart(false), 2000);
   }
 
@@ -110,7 +125,7 @@ export default function ProductDetail() {
               <span className="text-xs font-semibold bg-gray-100 px-3 py-1 rounded-full">MỚI</span>
               <h1 className="text-3xl font-bold mt-4 mb-2">{product.name}</h1>
               <p className="text-sm text-gray-600 mb-4">{category ?? ""}</p>
-              <p className="text-2xl font-bold">{product.price}</p>
+              <p className="text-2xl font-bold">{product?.price?.toLocaleString('vi-VN')} đ</p>
             </div>
 
             <div className="flex gap-4">
