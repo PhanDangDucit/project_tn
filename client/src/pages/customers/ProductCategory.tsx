@@ -1,25 +1,29 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { Heart, ArrowLeft } from 'lucide-react';
-import { allProducts, Product } from '../../../db/products';
+// import { allProducts, Product } from '../../../db/products';
+import { useGetProductCategoryByIdQuery } from '~/services/product-category/productCategories.service';
+import { useGetProductQuery } from '~/services/product/product.service';
+import { useEffect, useState } from 'react';
+import { TProduct } from '~/interfaces/types/product';
 
 export default function ProductCategoryPage() {
-  const { category } = useParams<{ category: string }>();
+  const { id } = useParams<{ id: string }>();
+  
+  const {data: productData} = useGetProductQuery();
+  const {data: category, isLoading} = useGetProductCategoryByIdQuery(id!);
+
+  const [products, setProducts] = useState<TProduct[]>([]);
   const navigate = useNavigate();
 
-  const validCategories = ['NAM', 'NỮ', 'THỰC PHẨM BỔ SUNG', 'PHỤ KIỆN', 'BESTSELLER'];
-  const categoryMap: Record<string, string> = {
-    'NAM': 'NAM',
-    'NỮ': 'NỮ',
-    'THỰC PHẨM BỔ SUNG': 'THỰC PHẨM BỔ SUNG',
-    'PHỤ KIỆN': 'PHỤ KIỆN',
-    'BESTSELLER': 'BESTSELLER',
-  };
+  useEffect(() => {
+    if(productData?.data && category?.data) {
+      const categorized = productData.data
+        .filter((product) => product.category_id == id);
+      setProducts(categorized);
+    }
+  }, [productData, category]);
 
-  const categoryLabel = Object.keys(categoryMap).find(
-    (key) => key.toLowerCase() === category?.toLowerCase()
-  );
-
-  if (!categoryLabel || !validCategories.includes(categoryLabel)) {
+  if (!category && isLoading) {
     return (
       <div className="min-h-screen bg-white">
         <div className="max-w-7xl mx-auto px-4 py-16">
@@ -35,10 +39,6 @@ export default function ProductCategoryPage() {
     );
   }
 
-  const products = allProducts.filter(
-    (p) => p.category === categoryLabel
-  );
-
   return (
     <div className="min-h-screen bg-white">
       <div className="max-w-7xl mx-auto px-4 py-8">
@@ -51,8 +51,8 @@ export default function ProductCategoryPage() {
             <ArrowLeft className="w-4 h-4" />
             Quay lại
           </button>
-          <h1 className="text-4xl font-bold">{categoryLabel}</h1>
-          <p className="text-gray-600 mt-2">{products.length} sản phẩm</p>
+          <h1 className="text-4xl font-bold">{category?.data?.name ?? ""}</h1>
+          <p className="text-gray-600 mt-2">{products.length ?? 0} sản phẩm</p>
         </div>
 
         {/* Filters */}
@@ -88,7 +88,7 @@ export default function ProductCategoryPage() {
   );
 }
 
-function ProductCard({ product }: { product: Product }) {
+function ProductCard({ product }: { product: TProduct }) {
   const navigate = useNavigate();
 
   return (

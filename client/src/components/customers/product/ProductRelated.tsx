@@ -1,10 +1,12 @@
 import { Heart } from 'lucide-react';
-import { allProducts } from "../../../../db/products";
 import { useNavigate } from 'react-router-dom';
+import { useGetProductQuery } from '~/services/product/product.service';
 
 export default function ProductRelated({product}: {product: any}) {
     const navigate = useNavigate();
-    const relatedProducts = allProducts.filter(p => p.id !== product.id).slice(0, 8);
+    const {data: products} = useGetProductQuery();
+    
+    const relatedProducts = products?.data?.filter(p => p.id !== product.id).slice(0, 8) ?? [];
 
   return (
     <div className="border-t border-gray-200 pt-16">

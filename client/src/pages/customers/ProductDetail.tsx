@@ -1,42 +1,67 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { Share2, ChevronLeft, Check } from 'lucide-react';
-import { useState } from 'react';
-import { useCart } from '../../context/CartContext';
-import { allProducts } from '../../../db/products';
+import { useEffect, useState } from 'react';
+// import { useCart } from '../../context/CartContext';
+// import { allProducts } from '../../../db/products';
 import ProductEmpty from '~/components/customers/product/ProductEmpty';
 import { useAppSelector } from '~/hooks/HookRouter';
 import { RootState } from '~/redux/storage/store';
 import { Toastify } from '~/helpers/Toastify';
 import ProductRelated from '~/components/customers/product/ProductRelated';
+import { useGetProductQuery } from '~/services/product/product.service';
+import { TProduct } from '~/interfaces/types/product';
+import { useGetProductCategoriesQuery } from '~/services/product-category/productCategories.service';
 
 export default function ProductDetail() {
   const auth = useAppSelector((state: RootState) => state.auth);
   const { id } = useParams();
   const navigate = useNavigate();
-  const { addToCart } = useCart();
-  const [selectedSize, setSelectedSize] = useState<string>('');
+  // const { addToCart } = useCart();
+  // const [selectedSize, setSelectedSize] = useState<string>('');
   const [quantity, setQuantity] = useState(1);
   const [addedToCart, setAddedToCart] = useState(false);
+  const {data: productData} = useGetProductQuery();
+  const {data: productCategories} = useGetProductCategoriesQuery();
+  
+  const [category, setCategory] = useState<string>('');
 
-  const product = allProducts.find(p => p.id === Number(id));
+  const [product, setProduct] = useState<TProduct|null>(null);
+
+  useEffect(() => {
+    if(!productData) return;
+    const product = productData?.data?.find(p => Number(p.id!) === Number(id));
+    if(!product) {
+      setProduct(null);
+      return;
+    }
+    setProduct(product);
+  }, [productData]);
+
+  useEffect(() => {
+    if(product) {
+      const categoryOfProduct = productCategories?.data?.find(cat => cat.id === product.category_id);
+      setCategory(categoryOfProduct?.name!);
+    }
+  }, [product, productCategories]);
 
   const handleAddToCart = () => {
     if(!auth.loggedIn) {
       Toastify('Vui lòng đăng nhập để tiếp tục', 400);
       navigate('/login');
       return;
-    } else if (!selectedSize) {
-      Toastify('Vui lòng chọn size/loại sản phẩm', 301);
-      return;
     }
-    addToCart({
-      id: product?.id!,
-      name: product?.name!,
-      price: product?.price,
-      image: product?.image,
-      size: selectedSize,
-      quantity,
-    });
+    // } else if (!selectedSize) {
+    //   Toastify('Vui lòng chọn size/loại sản phẩm', 301);
+    //   return;
+    // }
+    // addToCart({
+    //   id: product?.id!,
+    //   name: product?.name!,
+    //   price: product?.price,
+    //   image: product?.image,
+    //   size: selectedSize,
+    //   quantity,
+    // });
     setAddedToCart(true);
     setTimeout(() => setAddedToCart(false), 2000);
   }
@@ -84,7 +109,7 @@ export default function ProductDetail() {
             <div>
               <span className="text-xs font-semibold bg-gray-100 px-3 py-1 rounded-full">MỚI</span>
               <h1 className="text-3xl font-bold mt-4 mb-2">{product.name}</h1>
-              <p className="text-sm text-gray-600 mb-4">{product.description}</p>
+              <p className="text-sm text-gray-600 mb-4">{category ?? ""}</p>
               <p className="text-2xl font-bold">{product.price}</p>
             </div>
 
@@ -100,26 +125,12 @@ export default function ProductDetail() {
             <div className="border-t border-b border-gray-200 py-6">
               <h3 className="font-bold text-sm mb-4">MÔ TẢ</h3>
               <p className="text-sm text-gray-600 leading-relaxed">
-                {product.fullDescription}
+                {product.description}
               </p>
             </div>
 
-            {product.features && (
-              <div className="space-y-3">
-                <h3 className="font-bold text-sm">ĐẶC ĐIỂM NỔI BẬT</h3>
-                <ul className="space-y-2">
-                  {product.features.map((feature, idx) => (
-                    <li key={idx} className="text-sm text-gray-600 flex items-start gap-2">
-                      <span className="text-black">•</span>
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-
             <div className="space-y-4">
-              <div>
+              {/* <div>
                 <h3 className="font-bold text-sm mb-3">SIZE / LOẠI</h3>
                 <div className="flex flex-wrap gap-2">
                   {product.sizes?.map((size) => (
@@ -136,7 +147,7 @@ export default function ProductDetail() {
                     </button>
                   ))}
                 </div>
-              </div>
+              </div> */}
 
               <div>
                 <h3 className="font-bold text-sm mb-3">SỐ LƯỢNG</h3>
@@ -147,7 +158,7 @@ export default function ProductDetail() {
                   >
                     -
                   </button>
-                  <span className="text-lg font-medium min-w-[40px] text-center">{quantity}</span>
+                  <span className="text-lg font-medium min-w-10 text-center">{quantity}</span>
                   <button
                     onClick={() => setQuantity(quantity + 1)}
                     className="w-10 h-10 border border-gray-300 rounded-full hover:bg-gray-50 transition"
@@ -176,7 +187,7 @@ export default function ProductDetail() {
               )}
             </button>
 
-            <div className="space-y-2">
+            {/* <div className="space-y-2">
               <button className="w-full py-3 text-sm font-medium border-b border-gray-200 flex items-center justify-between hover:text-gray-600 transition">
                 <span>HƯỚNG DẪN SỬ DỤNG</span>
                 <span>+</span>
@@ -185,7 +196,7 @@ export default function ProductDetail() {
                 <span>CHÍNH SÁCH ĐỔI TRẢ</span>
                 <span>+</span>
               </button>
-            </div>
+            </div> */}
           </div>
         </div>
         

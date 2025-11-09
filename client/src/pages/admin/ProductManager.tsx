@@ -2,20 +2,24 @@ import { FaEdit, FaTrash } from "react-icons/fa";
 import { useCreateProductMutation, useDeleteProductMutation, useGetProductQuery, useUpdateProductMutation } from "~/services/product/product.service";
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react';
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { set, useForm } from "react-hook-form";
 import { FaPlus } from "react-icons/fa";
 import { Button } from 'react-daisyui';
 import { TProduct } from "~/interfaces/types/product";
 import { Toastify } from "~/helpers/Toastify";
+import { useGetProductCategoriesQuery } from "~/services/product-category/productCategories.service";
 
 export function ProductManager() {
 
     const { data: products, isLoading, refetch } = useGetProductQuery();
+    const {data: categories} = useGetProductCategoriesQuery();
     const [createProduct] = useCreateProductMutation();
     const [updateProduct] = useUpdateProductMutation();
     const [deleteProduct] = useDeleteProductMutation();
 
     console.log('products', products);
+    console.log('categories', categories);
+
     const [showModal, setShowModal] = useState(false);
     const [selectedProduct, setselectedProduct] = useState<TProduct | null>(null);
 
@@ -30,6 +34,11 @@ export function ProductManager() {
     const handleEditClick = (product: TProduct) => {
         setselectedProduct(product);
         setValue('name', product.name);
+        setValue('description', product.description!);
+        setValue('price', product.price);
+        setValue('category_id', product.category_id);
+        setValue('image', product.image);
+        setValue('price_sale', product.price_sale);
         setShowModal(true);
     };
     
@@ -49,16 +58,15 @@ export function ProductManager() {
 
     // handle form submit
     const onSubmit = async (data: TProduct) => {
-        const finalData = { ...data, id: selectedProduct };
         try {
             if (selectedProduct) {
                 await updateProduct({
                     id: selectedProduct.id!,
-                    data: finalData,
+                    data,
                 }).unwrap();
                 Toastify('Cập nhật sản phẩm thành công', 201);
             } else {
-                await createProduct(finalData).unwrap();
+                await createProduct(data).unwrap();
                 Toastify('Thêm sản phẩm thành công', 201);
             }
             reset();
@@ -115,8 +123,8 @@ export function ProductManager() {
                                         {products?.data?.map((category: TProduct) => (
                                         <tr className="text-center">
                                             <td>{category.id}</td>
-                                            <td>
-                                                <img src={category.image ?? "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRnbkwbU36ZqP0s6_Ltc3z7t0n1sGvavBn6mA&s"} alt="image" />
+                                            <td className="flex justify-center">
+                                                <img src={category.image ?? "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRnbkwbU36ZqP0s6_Ltc3z7t0n1sGvavBn6mA&s"} alt="image" className="w-20 h-20"/>
                                             </td>
                                             <td>{category?.name ?? ""}</td>
                                             <td>{category?.price?.toLocaleString('vi-VN')}₫</td>
@@ -165,6 +173,8 @@ export function ProductManager() {
                                             <DialogTitle as="h3" className="text-base font-semibold text-gray-900">
                                             {selectedProduct ? 'Chỉnh sửa sản phẩm sản phẩm' : 'Thêm sản phẩm sản phẩm'}
                                             </DialogTitle>
+
+                                            {/* Tên */}
                                             <div className="mt-2">
                                                 <label className="label">Tên sản phẩm </label>
                                                 <input
@@ -178,6 +188,81 @@ export function ProductManager() {
                                                 {errors.name && (
                                                     <p className="text-red-500 text-sm ">{errors.name.message}</p>
                                                 )}
+                                            </div>
+
+                                            {/* danh mục */}
+                                            <div className="mt-2">
+                                                <label className="label">Danh mục sản phẩm </label>
+                                                <select
+                                                    {...register('category_id', {
+                                                        required: 'Danh mục sản phẩm là bắt buộc',
+                                                    })}
+                                                    className="w-full bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border border-slate-200 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow"
+                                                >
+                                                    <option value="">Chọn danh mục</option>
+                                                    {categories?.data?.map((category) => (
+                                                        <option key={category.id} value={category.id}>
+                                                            {category.name}
+                                                        </option>
+                                                    ))}
+                                                </select>
+                                                
+                                                {errors.category_id && (
+                                                    <p className="text-red-500 text-sm ">{errors.category_id.message}</p>
+                                                )}
+                                            </div>
+
+                                            <div className="mt-2">
+                                                <label className="label">Mô tả sản phẩm </label>
+                                                <textarea
+                                                    {...register('description')}
+                                                    placeholder="Nhập mô tả sản phẩm"
+                                                    className="w-full bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border border-slate-200 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow"
+                                                />
+                                                {errors.description && (
+                                                    <p className="text-red-500 text-sm ">{errors.description.message}</p>
+                                                )}
+                                            </div>
+                                            {/* Image */}
+                                            <div className="mt-2">
+                                                <label className="label">Hình ảnh sản phẩm </label>
+                                                <input
+                                                    {...register('image')}
+                                                    type="text"
+                                                    placeholder="Nhập hình ảnh sản phẩm"
+                                                    className="w-full bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border border-slate-200 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow"
+                                                />
+                                                {errors.image && (
+                                                    <p className="text-red-500 text-sm ">{errors.image.message}</p>
+                                                )}
+                                            </div>
+
+                                            {/* Giá */}
+                                            <div className="mt-2">
+                                                <label className="label">Giá sản phẩm </label>
+                                                <input
+                                                    {...register('price', {
+                                                        required: 'Giá sản phẩm là bắt buộc',
+                                                    })}
+                                                    type="number"
+                                                    min={0}
+                                                    placeholder="Nhập giá sản phẩm"
+                                                    className="w-full bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border border-slate-200 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow"
+                                                />
+                                                {errors.price && (
+                                                    <p className="text-red-500 text-sm ">{errors.price.message}</p>
+                                                )}
+                                            </div>
+                                            {/* Giá khuyến mãi */}
+                                            <div className="mt-2">
+                                                <label className="label">Giá khuyến mãi </label>
+                                                <input
+                                                    {...register('price_sale')}
+                                                    type="number"
+                                                    min={0}
+                                                    placeholder="Nhập giá khuyến mãi"
+                                                    className="w-full bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border border-slate-200 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow"
+                                                />
                                             </div>
                                         </div>
                                     </div>
