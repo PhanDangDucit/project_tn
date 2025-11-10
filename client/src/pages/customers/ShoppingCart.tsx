@@ -178,8 +178,12 @@ export default function ShoppingCart() {
               <span>{formatPrice(total)} đ</span>
             </div>
 
-            <button className="w-full bg-black text-white py-3 rounded-full font-semibold hover:bg-gray-800 transition mb-3">
-              THANH TOÁN
+            <button className="w-full bg-black text-white py-3 rounded-full font-semibold hover:bg-gray-800 transition mb-3 cursor-pointer" 
+              onClick={() => {
+                navigate('/order')
+                console.log('Đặt hàng');
+              }}>
+              ĐẶT HÀNG
             </button>
 
             <button

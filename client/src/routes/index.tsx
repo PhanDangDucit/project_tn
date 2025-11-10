@@ -25,6 +25,7 @@ import { OrderHistory } from '~/pages/customers/OrderHistory';
 import { Profile } from '~/pages/customers/Profile';
 import { UpdateProfile } from '~/pages/customers/UpdateProfile';
 import { ChangePassword } from '~/pages/customers/ChangePassword';
+import Order from '~/pages/customers/Order';
 const AdminLayout = lazy(() => import('../layouts/pages/admin/AdminLayout'));
 const AdminDashboardPage = lazy(() => import('../pages/admin/AdminDashboardPage'));
 const AdminLoginPage = lazy(() => import('../pages/admin/AdminLoginPage'));
@@ -49,11 +50,6 @@ export default function AppRoutes() {
         <Route path="/category/:id" element={<ProductCategoryPage />} />
         <Route path="/product/:id" element={<ProductDetail />} />
         
-        <Route path="/order-history" element={<OrderHistory />} />
-        <Route path="/update-profile" element={<UpdateProfile />} />
-        <Route path="/change-pasword" element={<ChangePassword />} />
-        <Route path="/cart" element={<ShoppingCart />} />
-
         <Route element={<NotLoggedMiddleware />}>
           <Route path="login" element={<LoginPage />} />
           <Route path="register" element={<RegisterPage />} />
@@ -62,15 +58,13 @@ export default function AppRoutes() {
           path="/"
           element={<PrivateRoute allowedRoles={[ROLE.CUSTOMER]} />}
         >
-          {/* <Route path="/order-history" element={<OrderHistory />} />
+          <Route path="/order-history" element={<OrderHistory />} />
+          <Route path="/cart" element={<ShoppingCart />} />
+          <Route path="/order" element={<Order />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/update-profile" element={<UpdateProfile />} />
           <Route path="/change-pasword" element={<ChangePassword />} />
-          <Route path="/cart" element={<ShoppingCart />} /> */}
-          <Route path="/profile" element={<Profile />} />
-
         </Route>
-        {/* <Route path="/scan-image" element={<ScanImage />} /> */}
       </Route>
 
       {/* admin */}
