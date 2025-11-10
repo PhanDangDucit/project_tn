@@ -2,7 +2,7 @@ import { FaEdit, FaTrash } from "react-icons/fa";
 import { useCreateProductMutation, useDeleteProductMutation, useGetProductQuery, useUpdateProductMutation } from "~/services/product/product.service";
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react';
 import { useState } from "react";
-import { set, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { FaPlus } from "react-icons/fa";
 import { Button } from 'react-daisyui';
 import { TProduct } from "~/interfaces/types/product";
@@ -120,25 +120,25 @@ export function ProductManager() {
                                         <th>Hành động</th>
                                     </thead>
                                     <tbody>
-                                        {products?.data?.map((category: TProduct) => (
+                                        {products?.data?.map((product: TProduct) => (
                                         <tr className="text-center">
-                                            <td>{category.id}</td>
+                                            <td>{product.id}</td>
                                             <td className="flex justify-center">
-                                                <img src={category.image ?? "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRnbkwbU36ZqP0s6_Ltc3z7t0n1sGvavBn6mA&s"} alt="image" className="w-20 h-20"/>
+                                                <img src={product.image ?? "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRnbkwbU36ZqP0s6_Ltc3z7t0n1sGvavBn6mA&s"} alt="image" className="w-20 h-20"/>
                                             </td>
-                                            <td>{category?.name ?? ""}</td>
-                                            <td>{category?.price?.toLocaleString('vi-VN')}₫</td>
-                                            <td>{category?.quantity ?? 0}</td>
-                                            <td>{new Date(category.created_at!).toLocaleString('vi-VN')}</td>
+                                            <td>{product?.name ?? ""}</td>
+                                            <td>{product?.price?.toLocaleString('vi-VN')}₫</td>
+                                            <td>{product?.quantity ?? 0}</td>
+                                            <td>{new Date(product.created_at!).toLocaleString('vi-VN')}</td>
                                             <td className="px-4 py-3 flex items-center justify-center space-x-2 mt-2">
                                                 <button
-                                                    onClick={() => handleDeleteProduct(category.id!)}
+                                                    onClick={() => handleDeleteProduct(product.id!)}
                                                     className="bg-red-600 text-white px-3 py-1 rounded flex items-center"
                                                 >
                                                     <FaTrash className="mr-1" /> Xóa
                                                 </button>
                                                 <button
-                                                    onClick={() => handleEditClick(category)}
+                                                    onClick={() => handleEditClick(product)}
                                                     className="bg-blue-600 text-white px-3 py-1 rounded flex items-center"
                                                 >
                                                     <FaEdit className="mr-1" /> Sửa

@@ -25,11 +25,11 @@ export interface ICustomer {
   full_name?: string;
   email?: string;
   phone?: string;
-  status?: number;
   sex?: number;
+  is_block?: boolean;
   verificationCode?: string | null;
-  createdAt?: string;
-  updatedAt?: string;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export type IUsersResponse = IResponse<ICustomer[]>;
