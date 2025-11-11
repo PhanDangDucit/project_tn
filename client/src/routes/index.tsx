@@ -26,6 +26,7 @@ import { Profile } from '~/pages/customers/Profile';
 import { UpdateProfile } from '~/pages/customers/UpdateProfile';
 import { ChangePassword } from '~/pages/customers/ChangePassword';
 import Order from '~/pages/customers/Order';
+import PaymentMethods from '~/pages/admin/PaymentMethods';
 const AdminLayout = lazy(() => import('../layouts/pages/admin/AdminLayout'));
 const AdminDashboardPage = lazy(() => import('../pages/admin/AdminDashboardPage'));
 const AdminLoginPage = lazy(() => import('../pages/admin/AdminLoginPage'));
@@ -97,6 +98,10 @@ export default function AppRoutes() {
             <Route
               path="posts"
               element={<PostManager/>}
+            />
+            <Route
+              path="payment-methods"
+              element={<PaymentMethods/>}
             />
             <Route
               path="contacts"

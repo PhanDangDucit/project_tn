@@ -15,6 +15,7 @@ import { cartDetailApi } from '~/services/cart/cart.service';
 import { customerApi } from '~/services/customer/customer.service';
 import { orderApi } from '~/services/order/order.service';
 import { orderDetailApi } from '~/services/order/order-detail.service';
+import { paymentMethodsApi } from '~/services/payment-methods/payment-method.service';
 
 const persistConfig = {
   key: 'root',
@@ -32,6 +33,7 @@ const rootReducer = combineReducers({
   [customerApi.reducerPath]: customerApi.reducer,
   [orderApi.reducerPath]: orderApi.reducer,
   [orderDetailApi.reducerPath]: orderDetailApi.reducer,
+  [paymentMethodsApi.reducerPath]: paymentMethodsApi.reducer,
   [logoutApi.reducerPath]: logoutApi.reducer,
   auth: authSlice,
 });
@@ -53,6 +55,7 @@ const store = configureStore({
       customerApi.middleware,
       orderApi.middleware,
       orderDetailApi.middleware,
+      paymentMethodsApi.middleware,
       logoutApi.middleware,
       rtkQueryLogger,
     ),

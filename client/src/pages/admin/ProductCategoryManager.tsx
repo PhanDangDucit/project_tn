@@ -47,16 +47,15 @@ export function ProductCategoryManager() {
 
     // handle form submit
     const onSubmit = async (data: TProductCategory) => {
-        const finalData = { ...data, id: selectedProductCategory };
         try {
             if (selectedProductCategory) {
                 await updateProductCategory({
                     id: selectedProductCategory.id!,
-                    data: finalData,
+                    data,
                 }).unwrap();
                 Toastify('Cập nhật danh mục sản phẩm thành công', 201);
             } else {
-                await createProductCategory(finalData).unwrap();
+                await createProductCategory(data).unwrap();
                 Toastify('Thêm danh mục sản phẩm thành công', 201);
             }
             reset();
@@ -78,7 +77,7 @@ export function ProductCategoryManager() {
     }
 
     return (
-        <div className="px-20 py-10">
+        <div className="p-20">
             <div className="flex justify-between">
                 <h1 className="font-bold text-3xl">Danh mục sản phẩm</h1>
                 <Button
