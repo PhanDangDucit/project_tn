@@ -138,7 +138,7 @@ const Sidebar = () => {
         {/* Quản lý thanh toán */}
         <li>
           <Link
-            to="/admin/payment-appointment"
+            to="/admin/payment-methods"
             className="block p-2 hover:bg-gray-700"
           >
             <MdPayments className="inline mr-2" /> Quản lý thanh toán

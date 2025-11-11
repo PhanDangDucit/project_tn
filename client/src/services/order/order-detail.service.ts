@@ -2,30 +2,38 @@ import { createApi } from '@reduxjs/toolkit/query/react';
 
 import { baseQueryWithReauth } from '../auth/auth.services';
 import { TOrderDetail } from '~/interfaces/types/order';
+import { IResponse } from '~/interfaces/types/response';
 
 export const orderDetailApi = createApi({
   reducerPath: 'orderDetailApi',
   baseQuery: baseQueryWithReauth,
   keepUnusedDataFor: 60,
   endpoints: (builder) => ({
-    getOrderDetails: builder.query<TOrderDetail, void>({
+    getOrderDetails: builder.query<IResponse<TOrderDetail>, void>({
       query: () => '/api/v1/order-details',
     }),
-    getOrderDetailsByOrderId: builder.query<TOrderDetail, string>({
+    getOrderDetailsByOrderId: builder.query<IResponse<TOrderDetail>, string>({
       query: (order_id) => `/api/v1/order-details/order/${order_id}`,
     }),
-    getOrderDetailById: builder.query<TOrderDetail, string>({
+    getOrderDetailById: builder.query<IResponse<TOrderDetail>, string>({
       query: (id) => `/api/v1/order-details/${id}`,
     }),
-    createOrderDetail: builder.mutation<TOrderDetail[], TOrderDetail>({
+    createOrderDetail: builder.mutation<IResponse<TOrderDetail[]>, TOrderDetail>({
       query: (orderDetailData) => ({
-        url: '/api/v1/order-details',
+        url: `/api/v1/order-details`,
         method: 'POST',
         body: orderDetailData,
       }),
     }),
+    createOrderDetailByOrderId: builder.mutation<IResponse<TOrderDetail[]>, {id: string; data:TOrderDetail}>({
+      query: ({id, data}) => ({
+        url: `/api/v1/orders/${id}/order-details`,
+        method: 'POST',
+        body: data,
+      }),
+    }),
     updateOrderDetail: builder.mutation<
-      TOrderDetail,
+      IResponse<TOrderDetail>,
       { id: string; data: Partial<TOrderDetail> }
     >({
       query: ({ id, data }) => ({
@@ -42,5 +50,6 @@ export const {
   useGetOrderDetailsByOrderIdQuery,
   useGetOrderDetailByIdQuery,
   useCreateOrderDetailMutation,
+  useCreateOrderDetailByOrderIdMutation,
   useUpdateOrderDetailMutation,
 } = orderDetailApi;

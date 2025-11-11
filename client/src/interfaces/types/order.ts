@@ -1,16 +1,20 @@
+import { TPaymentMethod } from "./payment-method";
+import { ICustomer } from "./user";
+
 export type TOrder = {
     id?: string;
     customer_id: string;
     payment_id?: string;
-    code: string,
+    code?: string,
     address: string,
     order_status: string,
     created_at?: string;
     updated_at?: string;
     final_total: number;
     discount?: number;
+    phone: string;
     total: number;
-    is_payment: boolean;
+    is_payment?: boolean;
 }
 
 export type TOrderDetail = {
@@ -22,3 +26,5 @@ export type TOrderDetail = {
     created_at?: string;
     updated_at?: string;
 }
+
+export type TGetAllOrder = TOrder & {payment: TPaymentMethod} & {customer: ICustomer}
