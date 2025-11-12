@@ -1,4 +1,5 @@
 import { TPaymentMethod } from "./payment-method";
+import { TProduct } from "./product";
 import { ICustomer } from "./user";
 
 export type TOrder = {
@@ -28,3 +29,5 @@ export type TOrderDetail = {
 }
 
 export type TGetAllOrder = TOrder & {payment: TPaymentMethod} & {customer: ICustomer}
+export type TGetOneOrder = TOrder & {payment: TPaymentMethod} & {customer: ICustomer} & {order_details: TGetAllOrderDetail[]}
+export type TGetAllOrderDetail = TOrderDetail & {product: TProduct}

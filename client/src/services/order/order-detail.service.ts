@@ -1,7 +1,7 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 
 import { baseQueryWithReauth } from '../auth/auth.services';
-import { TOrderDetail } from '~/interfaces/types/order';
+import { TGetAllOrderDetail, TOrderDetail } from '~/interfaces/types/order';
 import { IResponse } from '~/interfaces/types/response';
 
 export const orderDetailApi = createApi({
@@ -9,10 +9,10 @@ export const orderDetailApi = createApi({
   baseQuery: baseQueryWithReauth,
   keepUnusedDataFor: 60,
   endpoints: (builder) => ({
-    getOrderDetails: builder.query<IResponse<TOrderDetail>, void>({
+    getOrderDetails: builder.query<IResponse<TOrderDetail[]>, void>({
       query: () => '/api/v1/order-details',
     }),
-    getOrderDetailsByOrderId: builder.query<IResponse<TOrderDetail>, string>({
+    getOrderDetailsByOrderId: builder.query<IResponse<TGetAllOrderDetail[]>, string>({
       query: (order_id) => `/api/v1/order-details/order/${order_id}`,
     }),
     getOrderDetailById: builder.query<IResponse<TOrderDetail>, string>({

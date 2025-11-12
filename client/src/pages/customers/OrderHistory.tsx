@@ -1,19 +1,36 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
 
 import { ProfileSidebar } from '~/layouts/pages/user/ProfileSidebar';
 import { FaEdit } from 'react-icons/fa';
 import { Eye } from 'lucide-react';
-import { useGetOrdersByUserIdQuery } from '~/services/order/order.service';
+import { useCancelOrderMutation, useGetOrdersByUserIdQuery } from '~/services/order/order.service';
 import { useGetMeQuery } from '~/services/auth/auth.services';
 import { TOrder } from '~/interfaces/types/order';
+import { Toastify } from '~/helpers/Toastify';
 
 
 export const OrderHistory: React.FC<object> = () => {
   const [orderStatus, setOrderStatus] = useState<string>("pending");
+  const navigate = useNavigate();
   const { data: userData } = useGetMeQuery();
   const {data: orderDatas, isLoading} = useGetOrdersByUserIdQuery(userData?.data?.id!);
+  const [cancelOrder] = useCancelOrderMutation();
   
+  const formatPrice = (num: number) => {
+      return num.toLocaleString('vi-VN');
+  };
+  const handleCancelOrder = async (orderId: string) => {
+    if (window.confirm('Bạn có chắc chắn muốn hủy đơn hàng này không?')) {
+      try {
+        await cancelOrder({ id: orderId, status: 'canceled' }).unwrap();
+        Toastify('Hủy đơn hàng thành công!', 200);
+      } catch (error) {
+        Toastify('Hủy đơn hàng thất bại.', 400);
+      }
+    }
+  };
   const handleClickOrderStatus = (type: string = "pending") => {
     setOrderStatus(type);
   }
@@ -23,7 +40,7 @@ export const OrderHistory: React.FC<object> = () => {
   );
 
   return (
-      <div className='flex flex-wrap py-20 max-w-[1200px] mx-auto'>
+      <div className='flex flex-wrap py-20 max-w-[1200px] mx-auto min-h-[1000px]'>
         <div className='w-3/12 relative'>
           <ProfileSidebar/>
         </div>
@@ -52,7 +69,7 @@ export const OrderHistory: React.FC<object> = () => {
               </li>
               <li 
                 className={orderStatus == "canceled" ? "font-bold text-xl" : ""} 
-                onClick={() => handleClickOrderStatus("canceled")}
+                onClick={() => handleClickOrderStatus("cancelled")}
               >
                 <p className='border-r text-white px-3 text-center cursor-pointer'>Đã hủy</p>
               </li>
@@ -83,22 +100,24 @@ export const OrderHistory: React.FC<object> = () => {
                           <tr>
                             <td className='text-center'>{order.code}</td>
                             <td className='text-center'></td>
-                            <td className='text-center'>{order.final_total}</td>
+                            <td className='text-center'>{formatPrice(order.final_total)} đ</td>
                             <td className='text-center'>{order.is_payment? "đã thanh toán" : "chưa thanh toán"}</td>
                             <td className='text-center'>{new Date(order.created_at!).toLocaleString('vi-VN')}</td>
                             <td className="px-4 py-3 flex items-center justify-center space-x-2 mt-2">
                               <button
-                              // onClick={() => handleDeleteClick(product._id!)}
+                              onClick={() => navigate(`/order-history/${order.id}`)}
                               className="bg-green-600 text-white px-3 py-1 rounded flex items-center"
                               >
                                   <Eye className="mr-1" /> Xem
                               </button>
-                              <button
-                                  // onClick={() => handleEditClick(product)}
-                                  className="bg-red-600 text-white px-3 py-1 rounded flex items-center"
-                              >
-                                  <FaEdit className="mr-1" /> Hủy
-                              </button>
+                              {order.order_status === 'pending' && (
+                                <button
+                                    onClick={() => handleCancelOrder(order.id!)}
+                                    className="bg-red-600 text-white px-3 py-1 rounded flex items-center"
+                                >
+                                    <FaEdit className="mr-1" /> Hủy
+                                </button>
+                              )}
                             </td>
                           </tr>))}
                         </> 

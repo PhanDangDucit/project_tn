@@ -28,6 +28,7 @@ import { ChangePassword } from '~/pages/customers/ChangePassword';
 import Order from '~/pages/customers/Order';
 import OrderDetail from '~/pages/customers/OrderDetail';
 import PaymentMethods from '~/pages/admin/PaymentMethods';
+import { AdminOrderHistory } from '~/pages/admin/AdminOrderHistory';
 const AdminLayout = lazy(() => import('../layouts/pages/admin/AdminLayout'));
 const AdminDashboardPage = lazy(() => import('../pages/admin/AdminDashboardPage'));
 const AdminLoginPage = lazy(() => import('../pages/admin/AdminLoginPage'));
@@ -113,6 +114,7 @@ export default function AppRoutes() {
               path="orders"
               element={<OrderManager/>}
             />
+            <Route path="order-history/:id" element={<AdminOrderHistory />} />
           </Route>
         </Route>
       </Route>

@@ -1,7 +1,7 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { baseQueryWithReauth } from '../auth/auth.services';
 import queryBuilder from '~/hooks/queryBuilder';
-import { TGetAllOrder, TOrder } from '~/interfaces/types/order';
+import { TGetAllOrder, TGetOneOrder, TOrder } from '~/interfaces/types/order';
 import { IResponse } from '~/interfaces/types/response';
 
 export const orderApi = createApi({
@@ -26,7 +26,7 @@ export const orderApi = createApi({
         queryBuilder('/api/v1/orders', { limit, page }),
       providesTags: ['Orders'],
     }),
-    getOrderById: builder.query<IResponse<TOrder>, string>({
+    getOrderById: builder.query<IResponse<TGetOneOrder>, string>({
       query: (id) => `/api/v1/orders/${id}`,
       providesTags: ['Orders'],
     }),
@@ -44,18 +44,29 @@ export const orderApi = createApi({
     >({
       query: ({ id, data }) => ({
         url: `/api/v1/orders/${id}`,
-        method: 'PATCH',
+        method: 'PUT',
         body: data,
       }),
       invalidatesTags: ['Orders'],
     }),
-    updateOrderStatus: builder.mutation<
+    // updateOrderStatus: builder.mutation<
+    //   IResponse<TOrder>,
+    //   { id: string; status: string }
+    // >({
+    //   query: ({ id, status }) => ({
+    //     url: `/api/v1/orders/${id}/status`,
+    //     method: 'PATCH',
+    //     body: { status },
+    //   }),
+    //   invalidatesTags: ['Orders'],
+    // }),
+    cancelOrder: builder.mutation<
       IResponse<TOrder>,
       { id: string; status: string }
     >({
       query: ({ id, status }) => ({
-        url: `/api/v1/orders/${id}/status`,
-        method: 'PATCH',
+        url: `/api/v1/orders/${id}/cancel`,
+        method: 'PUT',
         body: { status },
       }),
       invalidatesTags: ['Orders'],
@@ -70,5 +81,6 @@ export const {
   useGetOrderByIdQuery,
   useCreateOrderMutation,
   useUpdateOrderMutation,
-  useUpdateOrderStatusMutation,
+  // useUpdateOrderStatusMutation,
+  useCancelOrderMutation
 } = orderApi;
