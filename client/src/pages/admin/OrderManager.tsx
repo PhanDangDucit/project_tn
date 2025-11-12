@@ -78,6 +78,7 @@ export function OrderManager() {
       <option key="cancelled" value="cancelled">cancelled</option>,
     ];
   };
+  console.log('selectedOrder', selectedOrder);
 
   return (
     <div className="p-20">
@@ -201,7 +202,7 @@ export function OrderManager() {
                     </div>
                     <div>
                       <label htmlFor="is_payment" className="block text-sm font-medium text-gray-700">Trạng thái thanh toán</label>
-                      <select id="is_payment" {...register('is_payment', {setValueAs: (v) => v === 'true'})} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 border">
+                      <select id="is_payment" {...register('is_payment', {setValueAs: (v) => v == '1'})} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 border">
                         <option value="true">Đã thanh toán</option>
                         <option value="false">Chưa thanh toán</option>
                       </select>
