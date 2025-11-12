@@ -1,57 +1,48 @@
 import { FaEdit, FaTrash } from "react-icons/fa";
+import { TContact } from "~/interfaces/types/contact";
+import { useGetContactQuery } from "~/services/contact/contact.service";
 
 export function ContactManager() {
-    // const handleEditClick = (product: Product) => {
-    //     console.log('product: ===> ', product);
-    //     setEditingProduct(product);
-    //     setShowEditPopup(true);
-    //     setImagePreview(product.image);
-    // };
-    // const handleDeleteClick = (id: string) => {
-    //     console.log('productDeleteId: ', productDeleteId);
-    //     setProductDeleteId(id);
-    //     setShowConfirmPopup(true);
-    // };
+    const {data: contactDatas, isLoading} = useGetContactQuery();
+
     return (
-        <div className="px-20">
+        <div className="p-20">
             <h1 className="font-bold text-3xl">Liên hệ</h1>
-            <div className="mt-4">
-                <table className="w-full">
-                    <thead className="">
-                        <th>ID</th>
-                        <th>Thông tin khách hàng</th>
-                        <th>Nội dung</th>
-                        <th>Thời gian tạo</th>
-                        <th>Hành động</th>
-                    </thead>
-                    <tbody> 
-                        <tr>
-                            <td>21312</td>
-                            <td>
-                                <p>Họ tên: dscaacsa</p>
-                                <p>Email: csadcsac</p>
-                                <p>Số điện thoại: csadca</p>
-                            </td>
-                            <td>csadca</td>
-                            <td>csadca</td>
-                            <td className="px-4 py-3 flex items-center justify-center space-x-2 mt-2">
-                                <button
-                                // onClick={() => handleDeleteClick(product._id!)}
-                                className="bg-red-600 text-white px-3 py-1 rounded flex items-center"
-                                >
-                                    <FaTrash className="mr-1" /> Xóa
-                                </button>
-                                <button
-                                    // onClick={() => handleEditClick(product)}
-                                    className="bg-blue-600 text-white px-3 py-1 rounded flex items-center"
-                                >
-                                    <FaEdit className="mr-1" /> Sửa
-                                </button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+             {isLoading ? (
+                    <div className="text-center text-gray-500 mt-4">Đang tải...</div>
+                ) : (
+                <div className="mt-4">
+                    {!contactDatas?.data?.length ? (
+                        <div className="col-span-full text-center text-gray-500">
+                            Không có danh mục nào!
+                        </div>
+                    ) : (
+                    <table className="w-full">
+                        <thead className="">
+                            <th>ID</th>
+                            <th>Thông tin khách hàng</th>
+                            <th>Chủ đề</th>
+                            <th>Nội dung</th>
+                            <th>Thời gian tạo</th>
+                        </thead>
+                        <tbody> 
+                           {contactDatas?.data?.map((contact: TContact) => (
+                            <tr>
+                                <td className="text-center">{contact.id}</td>
+                                <td className="text-center">
+                                    <p>Họ tên: {contact.fullname ?? "None"}</p>
+                                    <p>Email: {contact.email ?? "None"}</p>
+                                    <p>Số điện thoại: {contact.phone ?? "None"}</p>
+                                </td>
+                                <td className="text-center">{contact.topic ?? "None"}</td>
+                                <td className="text-center">{contact.content ?? "None"}</td>
+                                <td className="text-center">{new Date(contact.created_at!).toLocaleString('vi-VN')}</td>
+                            </tr>))}
+                        </tbody>
+                    </table>
+                )}
+                </div>
+            )}
         </div>
     )
 }

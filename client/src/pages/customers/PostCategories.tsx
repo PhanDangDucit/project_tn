@@ -31,7 +31,7 @@ export const PostCategoriesPage: React.FC = () => {
     }, [posts, postCategories]);
 
   return (
-    <div className='flex gap-6 mx-auto max-w-[1200px] py-20'>
+    <div className='flex gap-6 mx-auto max-w-[1200px] py-20 min-h-screen'>
         {/* Category A */}
         <div className='flex flex-col gap-8'>
           {

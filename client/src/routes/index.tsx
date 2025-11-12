@@ -26,6 +26,7 @@ import { Profile } from '~/pages/customers/Profile';
 import { UpdateProfile } from '~/pages/customers/UpdateProfile';
 import { ChangePassword } from '~/pages/customers/ChangePassword';
 import Order from '~/pages/customers/Order';
+import OrderDetail from '~/pages/customers/OrderDetail';
 import PaymentMethods from '~/pages/admin/PaymentMethods';
 const AdminLayout = lazy(() => import('../layouts/pages/admin/AdminLayout'));
 const AdminDashboardPage = lazy(() => import('../pages/admin/AdminDashboardPage'));
@@ -60,6 +61,7 @@ export default function AppRoutes() {
           element={<PrivateRoute allowedRoles={[ROLE.CUSTOMER]} />}
         >
           <Route path="/order-history" element={<OrderHistory />} />
+          <Route path="/order-history/:id" element={<OrderDetail />} />
           <Route path="/cart" element={<ShoppingCart />} />
           <Route path="/order" element={<Order />} />
           <Route path="/profile" element={<Profile />} />
