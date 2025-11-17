@@ -10,3 +10,10 @@ export type TPost = {
   view_count: number;
   description?: string;
 };
+export type TPostCategory = {
+    id?:string;
+    name?: string;
+    created_at?: string;
+    updated_at?: string;
+}
+export type TGetAllPost = TPost & {category: TPostCategory}

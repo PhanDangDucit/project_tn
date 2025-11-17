@@ -43,6 +43,7 @@ export interface ILogoutError {
 }
 
 export interface IChangePasswordRequest {
-  oldPassword: string;
-  newPassword: string;
+  currentPassword: string;
+  password_confirmation: string;
+  password: string;
 }

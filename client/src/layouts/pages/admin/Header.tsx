@@ -7,41 +7,13 @@ import {
   FaUser,
   FaBell as FaBellOutline,
 } from 'react-icons/fa';
-// import { Link, useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
-// import { Toastify } from '~/helpers/Toastify';
 import { useAppSelector } from '~/hooks/HookRouter';
-// import { useLogoutHandler } from '~/hooks/useLogoutHandler';
-// import { ILogoutError } from '~/interfaces/types/auth/auth';
 import { RootState } from '~/redux/storage/store';
-// import { useLogoutMutation } from '~/services/auth/logout.services';
 
 const Header = () => {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const auth = useAppSelector((state: RootState) => state.auth.currentUser);
-  console.log("auth:: ", auth);
-  // const [logout, { isLoading }] = useLogoutMutation();
-  // const { handleLogout: logoutHandle } = useLogoutHandler();
-  // const refreshToken = useAppSelector(
-  //   (state: RootState) => state.auth.currentUser.refreshToken,
-  // );
-  // const navigate = useNavigate();
-
-  // const handleLogout = async () => {
-  //   try {
-  //     await logout({ refreshToken });
-  //     logoutHandle();
-  //     Toastify('Đăng xuất thành công', 201);
-  //     navigate('/auth/login', { replace: true });
-  //   } catch (error) {
-  //     const err = error as ILogoutError;
-  //     if (err.data?.message === 'Không tìm thấy session để xóa') {
-  //       logoutHandle();
-  //     } else {
-  //       Toastify('Đăng xuất thất bại', 400);
-  //     }
-  //   }
-  // };
 
   return (
     <div className="bg-black text-white p-4 fixed w-full top-0 flex justify-between items-center shadow-lg z-[999]">

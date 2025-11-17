@@ -5,7 +5,7 @@ import { Button } from 'react-daisyui';
 import { useForm } from 'react-hook-form';
 import { FaEdit, FaPlus, FaTrash } from 'react-icons/fa';
 import { Toastify } from '~/helpers/Toastify';
-import { TPostCategory } from '~/interfaces/types/post-category';
+import { TPostCategory } from '~/interfaces/types/post';
 import {
   useCreatePostCategoryMutation,
   useDeletePostCategoryMutation,

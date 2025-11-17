@@ -1,13 +1,14 @@
+import { useState } from "react";
 import { User } from "lucide-react";
 import { Link } from "react-router-dom"
 import { ProfileSidebar } from "~/layouts/pages/user/ProfileSidebar"
 import { useGetMeQuery } from "~/services/auth/auth.services";
-// import { RootState } from '~/redux/storage/store';
-// import { useAppSelector } from '~/hooks/HookRouter';
+import { ChangeAvatarModal } from "~/services/customer/ChangeAvatarModal";
+import { getLinkImage } from "~/constants/functions";
 
 export const Profile: React.FC<object> = () => {
-    // const auth = useAppSelector((state: RootState) => state.auth);
     const { data: userData } = useGetMeQuery();
+    const [isModalOpen, setIsModalOpen] = useState(false);
     
     return (
         <div className="flex flex-wrap py-20 max-w-[1200px] mx-auto">
@@ -21,7 +22,7 @@ export const Profile: React.FC<object> = () => {
                         {
                             userData?.data?.avatar ? (
                                 <img 
-                                    src={userData?.data?.avatar} alt="avatar user"
+                                    src={getLinkImage(userData?.data?.avatar)} alt="avatar user"
                                     className="w-full aspect-square rounded-full"
                                 />
                             ) : (
@@ -30,7 +31,8 @@ export const Profile: React.FC<object> = () => {
                         }
                         <p className="text-center">{userData?.data?.username ?? "chưa có dữ liệu"}</p>
                         <button
-                            type="button" 
+                            type="button"
+                            onClick={() => setIsModalOpen(true)}
                             className="bg-black text-white rounded-2xl py-2 cursor-pointer hover:opacity-80"
                         >
                             Thay đổi avatar
@@ -65,6 +67,7 @@ export const Profile: React.FC<object> = () => {
                     </div>
                 </div>
             </div>
+            <ChangeAvatarModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
         </div>
     )
 }

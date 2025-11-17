@@ -5,7 +5,6 @@ import { rtkQueryLogger } from '../../middlewares/rtkQueryLogger/rtkQueryLogger'
 import storage from 'redux-persist/lib/storage';
 import { blogApi } from '../../services/blog/blog.services';
 import { authApi } from '../../services/auth/auth.services';
-import { logoutApi } from '~/services/auth/logout.services';
 
 import authSlice from '../../services/auth/auth.slice';
 import { productCategoriesApi } from '~/services/product-category/productCategories.service';
@@ -36,7 +35,6 @@ const rootReducer = combineReducers({
   [orderDetailApi.reducerPath]: orderDetailApi.reducer,
   [paymentMethodsApi.reducerPath]: paymentMethodsApi.reducer,
   [contactApi.reducerPath]: contactApi.reducer,
-  [logoutApi.reducerPath]: logoutApi.reducer,
   auth: authSlice,
 });
 
@@ -59,7 +57,6 @@ const store = configureStore({
       orderDetailApi.middleware,
       paymentMethodsApi.middleware,
       contactApi.middleware,
-      logoutApi.middleware,
       rtkQueryLogger,
     ),
   devTools: import.meta.env.MODE !== 'production',

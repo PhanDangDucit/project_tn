@@ -3,15 +3,17 @@ import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Toastify } from "~/helpers/Toastify";
 import { useLogoutHandler } from "~/hooks/useLogoutHandler";
-import { useGetMeQuery } from "~/services/auth/auth.services";
-import { useLogoutMutation } from "~/services/auth/logout.services";
+import { useGetMeQuery, useLogoutMutation } from "~/services/auth/auth.services";
 import { RootState } from '~/redux/storage/store';
 import { useAppSelector } from '~/hooks/HookRouter';
 import { ILogoutError } from "~/interfaces/types/auth/auth";
+import { getLinkImage } from "~/constants/functions";
+import { ICustomer } from "~/interfaces/types/user";
 
 
 export function UserDropDown() {
-  const { data: userData } = useGetMeQuery();
+  const { data: userData, refetch } = useGetMeQuery();
+  const [customer, setCustomer] = useState<ICustomer | null>(null);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const userMenuRef = useRef<HTMLDivElement | null>(null);
   // Handle logout
@@ -19,14 +21,18 @@ export function UserDropDown() {
   const [logout] = useLogoutMutation();
   const navigate = useNavigate();
   const auth = useAppSelector((state: RootState) => state.auth);
-  // console.log("auth in userdropdown:: ", auth);
+  useEffect(() => {
+    setCustomer(userData?.data ?? null);
+  }, [userData?.data])
 
   const handleLogout = async () => {
     try {
-      await logout({accessToken: auth.accessToken!});
+      const res = await logout({accessToken: auth.accessToken!});
+      if(res.error) throw res.error;
       logoutHandler();
       Toastify('Đăng xuất thành công', 201);
       navigate('/', { replace: true });
+      refetch();
     } catch (error) {
       const err = error as ILogoutError;
       if (err.data?.message === 'Không tìm thấy session để xóa') {
@@ -36,16 +42,18 @@ export function UserDropDown() {
       }
     }
   };
-    useEffect(() => {
-        function handleClickOutside(e: MouseEvent) {
-        if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
-            setUserMenuOpen(false);
-        }
-        }
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => document.removeEventListener('mousedown', handleClickOutside);
-    }, []);
-    // console.log("userData in header:: ", userData?.data?.avatar);
+  console.log("customer", customer);
+  console.log("userData?.data", userData?.data);
+  
+  useEffect(() => {
+      function handleClickOutside(e: MouseEvent) {
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
+          setUserMenuOpen(false);
+      }
+      }
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
     return (
         <div>
@@ -61,9 +69,9 @@ export function UserDropDown() {
                       Try common avatar fields; adjust according to your API:
                       userData.user?.avatar || userData?.avatar
                     */}
-                    { userData?.data?.avatar ? (
+                    { customer?.avatar ? (
                       <img
-                        src={(userData as any).user?.avatar || (userData as any).avatar}
+                        src={getLinkImage(customer?.avatar)}
                         alt="avatar"
                         className="w-8 h-8 rounded-full object-cover"
                       />

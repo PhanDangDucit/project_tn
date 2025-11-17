@@ -1,8 +1,7 @@
 import { nanoid } from "@reduxjs/toolkit";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { TPost } from "~/interfaces/types/post";
-import { TPostCategory } from "~/interfaces/types/post-category";
+import { TPost, TPostCategory } from "~/interfaces/types/post";
 import { useGetBlogsQuery } from "~/services/blog/blog.services";
 import { useGetPostCategoriesQuery } from "~/services/post-category/post-category.service";
 

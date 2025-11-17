@@ -1,25 +1,25 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { IResponse } from '~/interfaces/types/response';
 import { baseQueryWithReauth } from '../auth/auth.services';
-import { TProduct } from '~/interfaces/types/product';
+import { ICustomer } from '~/interfaces/types/user';
 
 export const customerApi = createApi({
   reducerPath: 'customerApi',
   baseQuery: baseQueryWithReauth,
-  tagTypes: ['Customers'],
+  tagTypes: ['Customers', 'User'],
   keepUnusedDataFor: 60,
   endpoints: (builder) => ({
-    getCustomer: builder.query<IResponse<TProduct[]>, void>({
+    getCustomer: builder.query<IResponse<ICustomer[]>, void>({
       query: () => '/api/v1/customers',
       providesTags: ['Customers'],
     }),
 
-    getCustomerById: builder.query<IResponse<TProduct>, string>({
+    getCustomerById: builder.query<IResponse<ICustomer>, string>({
       query: (id) => `/api/v1/customers/${id}`,
       providesTags: ['Customers'],
     }),
 
-    createCustomer: builder.mutation<IResponse<TProduct>, TProduct>({
+    createCustomer: builder.mutation<IResponse<ICustomer>, ICustomer>({
       query: (productCategoryData) => ({
         url: '/api/v1/customers',
         method: 'POST',
@@ -29,15 +29,26 @@ export const customerApi = createApi({
     }),
 
     updateCustomer: builder.mutation<
-      IResponse<TProduct>,
-      { id: string; data: TProduct }
+      IResponse<ICustomer>,
+      { id: string; data: Partial<ICustomer> }
     >({
       query: ({ id, data }) => ({
         url: `/api/v1/customers/${id}`,
         method: 'PUT',
         body: data,
       }),
-      invalidatesTags: ['Customers'],
+      invalidatesTags: ['Customers', 'User'],
+    }),
+    updateAvatarCustomer: builder.mutation<
+      IResponse<ICustomer>,
+      { id: string; data: FormData }
+    >({
+      query: ({ id, data }) => ({
+        url: `/api/v1/customers/${id}/avatar`,
+        method: 'POST',
+        body: data,
+      }),
+      invalidatesTags: ['Customers', 'User'],
     }),
   }),
 });
@@ -47,4 +58,5 @@ export const {
   useGetCustomerByIdQuery,
   useCreateCustomerMutation,
   useUpdateCustomerMutation,
+  useUpdateAvatarCustomerMutation
 } = customerApi;

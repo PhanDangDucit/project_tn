@@ -10,37 +10,19 @@ import {
   IResetPasswordRequest,
   IChangePasswordRequest, // Thêm import mới
 } from '../../interfaces/types/auth/auth';
-// import { assignNewToken, logoutUser } from '../../services/auth/auth.slice';
+
 import { IRequestCredentials } from './../../interfaces/types/auth/auth';
 import { ICustomer, IUsersDetailResponse } from '~/interfaces/types/user';
 import { IResponse } from '~/interfaces/types/response';
-// import { assignAccessToken } from './auth.slice';
-
-// const getMeBaseQuery = fetchBaseQuery({
-//   baseUrl: import.meta.env.VITE_API_URL,
-//   prepareHeaders: (headers, { getState }) => {
-//     const state = getState() as RootState & {
-//       auth: { currentUser: { refreshToken: string } };
-//     };
-//     const refreshToken = state.auth?.currentUser?.refreshToken;
-//     if (refreshToken) {
-//       headers.set('Authorization', `Bearer ${refreshToken}`);
-//     }
-//     console.log('Headers in getMeBaseQuery:', headers);
-//     return headers;
-//   },
-// });
 
 const baseQuery = fetchBaseQuery({
   baseUrl: import.meta.env.VITE_API_URL,
   prepareHeaders: (headers, { getState }) => {
     const state = getState() as RootState;
-    console.log("state:: ", state)
 
     const token = (
       state as RootState
     ).auth.accessToken;
-    console.log("token:: ", token)
     if (token) {
       headers.set('Authorization', `Bearer ${token}`);
     }
@@ -76,8 +58,9 @@ export const authApi = createApi({
       query: (credentials) => ({
         url: '/api/v1/auth/login',
         method: 'POST',
-        body: credentials,
+        body: credentials
       }),
+      invalidatesTags: ['User'],
     }),
     register: builder.mutation<IUsersDetailResponse, ICustomer>({
       query: (formData) => ({
@@ -117,13 +100,24 @@ export const authApi = createApi({
     >({
       query: (changePasswordRequest) => ({
         url: '/api/v1/auth/change-password',
-        method: 'POST',
+        method: 'PUT',
         body: changePasswordRequest,
       }),
     }),
     getMe: builder.query<IResponse<ICustomer>, void>({
       query: () => `/api/v1/auth/me`,
-    })
+      providesTags: ['User'],
+    }),
+    logout: builder.mutation<void, { accessToken: string }>({
+      query: ({ accessToken }) => ({
+        url: '/api/v1/auth/logout',
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }),
+      invalidatesTags: ['User'],
+    }),
   }),
 });
 
@@ -136,4 +130,5 @@ export const {
   useVerifyCodeMutation,
   useChangePasswordMutation, // Export hook mới
   useGetMeQuery,
+  useLogoutMutation
 } = authApi;

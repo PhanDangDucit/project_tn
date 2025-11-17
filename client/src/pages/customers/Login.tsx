@@ -8,7 +8,6 @@ import {
 import { IRequestCredentials } from '~/interfaces/types/auth/auth';
 import { Toastify } from '~/helpers/Toastify';
 import 'react-toastify/dist/ReactToastify.css';
-// import { isIErrorResponse } from '~/interfaces/types/error/error';
 import { Logo } from '~/assets/images';
 
 const LoginPage: React.FC<object> = () => {
