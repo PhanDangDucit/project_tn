@@ -5,7 +5,6 @@ import { useForm } from "react-hook-form";
 import { useGetCustomerQuery, useUpdateCustomerMutation } from "~/services/customer/customer.service";
 import { ICustomer } from "~/interfaces/types/user";
 import { Toastify } from "~/helpers/Toastify";
-import { Eye } from "lucide-react";
 
 export function CustomerManager() {
     const { data: customers, isLoading, refetch } = useGetCustomerQuery();

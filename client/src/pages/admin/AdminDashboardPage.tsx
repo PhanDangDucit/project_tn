@@ -5,16 +5,17 @@ import {
   FaMoneyBillWave,
   FaClipboardList,
   FaUsers,
-  FaHourglassHalf,
-  FaCalendarCheck,
-  FaImages,
   FaBlogger,
-  FaHome,
+  // FaHourglassHalf,
+  // FaCalendarCheck,
+  // FaImages,
+  // FaBlogger,
+  // FaHome,
 } from 'react-icons/fa';
 import { useGetOrdersQuery } from '~/services/order/order.service';
 import { useGetCustomerQuery } from '~/services/customer/customer.service';
 import { useGetProductCategoriesQuery } from '~/services/product-category/productCategories.service';
-import { useGetPaymentMethodsQuery } from '~/services/payment-methods/payment-method.service';
+// import { useGetPaymentMethodsQuery } from '~/services/payment-methods/payment-method.service';
 import { useGetBlogsQuery } from '~/services/blog/blog.services';
 import LoadingLocal from '~/components/loading/LoadingLocal';
 import { Link } from 'react-router-dom';
@@ -24,8 +25,8 @@ const AdminDashboardPage: React.FC = () => {
   const { data: usersData, isLoading: usersLoading } = useGetCustomerQuery();
   const { data: productsData, isLoading: productsLoading } =
     useGetProductCategoriesQuery();
-  const { data: paymentsData, isLoading: paymentsLoading } =
-    useGetPaymentMethodsQuery();
+  // const { data: paymentsData, isLoading: paymentsLoading } =
+  //   useGetPaymentMethodsQuery();
   const { data: blogsData } = useGetBlogsQuery();
 
   const totalOrderRevenue =
@@ -83,8 +84,9 @@ const AdminDashboardPage: React.FC = () => {
   if (
     ordersLoading ||
     usersLoading ||
-    productsLoading ||
-    paymentsLoading
+    productsLoading 
+    // ||
+    // paymentsLoading
   ) {
     return <LoadingLocal />;
   }

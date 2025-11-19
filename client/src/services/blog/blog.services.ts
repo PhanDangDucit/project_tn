@@ -19,7 +19,7 @@ export const blogApi = createApi({
       providesTags: ['News'],
     }),
 
-    createBlog: builder.mutation<IResponse<TGetAllPost>, TGetAllPost>({
+    createBlog: builder.mutation<IResponse<TPost>, TPost>({
       query: (blogData) => ({
         url: '/api/v1/posts',
         method: 'POST',

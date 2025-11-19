@@ -1,7 +1,7 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { IResponse } from '~/interfaces/types/response';
 import { baseQueryWithReauth } from '../auth/auth.services';
-import { TPostCategory } from '~/interfaces/types/post-category';
+import { TPostCategory } from '~/interfaces/types/post';
 
 export const postCategoriesApi = createApi({
   reducerPath: 'postCategoriesApi',

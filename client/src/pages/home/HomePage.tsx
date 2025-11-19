@@ -10,7 +10,6 @@ import { useGetProductCategoriesQuery } from '~/services/product-category/produc
 import { useEffect, useState } from 'react';
 import { TProductCategory } from '~/interfaces/types/product-category';
 import { TProduct } from '~/interfaces/types/product';
-import { nanoid } from '@reduxjs/toolkit';
 import PostSection from '~/components/customers/home/PostSection';
 
 export default function HomePage() {

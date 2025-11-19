@@ -1,4 +1,3 @@
-import { FaEdit, FaTrash } from "react-icons/fa";
 import { TContact } from "~/interfaces/types/contact";
 import { useGetContactQuery } from "~/services/contact/contact.service";
 

@@ -22,7 +22,7 @@ export function OrderManager() {
     register,
     handleSubmit,
     setValue,
-    formState: { errors }
+    // formState: { errors }
   } = useForm<TOrder>();
 
   const handleEditClick = (order: TGetAllOrder) => {
