@@ -18,72 +18,72 @@ type TOrderForm = {
 };
 
 export default function Order() {
-    const navigate = useNavigate();
-    const { data: userData } = useGetMeQuery();
-    const { data: cartData } = useGetCartDetailByCustomerIdQuery(userData?.data?.id!);
-    const { data: products } = useGetProductQuery();
-    const { data: paymentMethodsData } = useGetPaymentMethodsQuery();
-    const [createOrder] = useCreateOrderMutation();
-    const [createOrderDetail] = useCreateOrderDetailByOrderIdMutation();
-    const [deleteAllCartDetails] = useDeleteAllCartDetailMutation();
+  const navigate = useNavigate();
+  const { data: userData } = useGetMeQuery();
+  const { data: cartData } = useGetCartDetailByCustomerIdQuery(userData?.data?.id!);
+  const { data: products } = useGetProductQuery();
+  const { data: paymentMethodsData } = useGetPaymentMethodsQuery();
+  const [createOrder] = useCreateOrderMutation();
+  const [createOrderDetail] = useCreateOrderDetailByOrderIdMutation();
+  const [deleteAllCartDetails] = useDeleteAllCartDetailMutation();
 
-    const {
-      register,
-      handleSubmit,
-      formState: { errors },
-    } = useForm<TOrderForm>();
-    
-    const cartItems = cartData?.data?.map(cartItem => {
-      const productFiltered = products?.data?.find(product => product.id === cartItem.product_id);
-      return {
-        ...productFiltered,
-        ...cartItem
-      }
-    }) ?? [];
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<TOrderForm>();
+  
+  const cartItems = cartData?.data?.map(cartItem => {
+    const productFiltered = products?.data?.find(product => product.id === cartItem.product_id);
+    return {
+      ...productFiltered,
+      ...cartItem
+    }
+  }) ?? [];
 
-    const total = cartItems?.reduce((sum, item) => {
-      const price = item?.price ?? 0;
-      const quantity = item?.quantity ?? 0;
-      return sum + price * quantity;
-    }, 0) ?? 0;
+  const total = cartItems?.reduce((sum, item) => {
+    const price = item?.price ?? 0;
+    const quantity = item?.quantity ?? 0;
+    return sum + price * quantity;
+  }, 0) ?? 0;
 
-    const onSubmit = async (data: TOrderForm) => {
-      try {
-        // 1. Create Order
-        const orderResponse = await createOrder({
-          customer_id: userData?.data?.id!,
-          total,
-          address: data.address,
-          phone: data.phone,
-          payment_id: data.payment_id,
-          order_status: 'pending', // or any default status
-          final_total: total
+  const onSubmit = async (data: TOrderForm) => {
+    try {
+      // 1. Create Order
+      const orderResponse = await createOrder({
+        customer_id: userData?.data?.id!,
+        total,
+        address: data.address,
+        phone: data.phone,
+        payment_id: data.payment_id,
+        order_status: 'pending', // or any default status
+        final_total: total
+      }).unwrap();
+
+      const orderId = orderResponse?.data?.id;
+
+      // 2. Create Order Details for each cart item
+      for (const item of cartItems) {
+        await createOrderDetail({
+          id: orderId!,
+          data: {
+            order_id: orderId!,
+            product_id: item.product_id,
+            quantity: item.quantity,
+            price: item.price!,
+          }
         }).unwrap();
-
-        const orderId = orderResponse?.data?.id;
-
-        // 2. Create Order Details for each cart item
-        for (const item of cartItems) {
-          await createOrderDetail({
-            id: orderId!,
-            data: {
-              order_id: orderId!,
-              product_id: item.product_id,
-              quantity: item.quantity,
-              price: item.price!,
-            }
-          }).unwrap();
-        }
-
-        // 3. Clear the cart
-        await deleteAllCartDetails(userData?.data?.id!).unwrap();
-
-        Toastify('Đặt hàng thành công!', 201);
-        navigate('/order-history');
-      } catch (error) {
-        Toastify('Đã có lỗi xảy ra khi đặt hàng.', 400);
       }
-    };
+
+      // 3. Clear the cart
+      await deleteAllCartDetails(userData?.data?.id!).unwrap();
+
+      Toastify('Đặt hàng thành công!', 201);
+      navigate('/order-history');
+    } catch (error) {
+      Toastify('Đã có lỗi xảy ra khi đặt hàng.', 400);
+    }
+  };
 
   const formatPrice = (num: number) => {
     return num.toLocaleString('vi-VN');
@@ -194,6 +194,7 @@ export default function Order() {
                             className="w-4 h-4 text-black border-gray-300 focus:ring-black"
                             defaultChecked={index === 0}
                             {...register('payment_id', { required: 'Vui lòng chọn phương thức thanh toán' })}
+                            // onChange={() => checkPaymentMethods()}
                           />
                           <span className="ml-2 text-sm font-medium">{method.name}</span>
                         </label>

@@ -1,5 +1,5 @@
-import { FaEdit, FaTrash } from "react-icons/fa";
-import { useCreateProductMutation, useDeleteProductMutation, useGetProductQuery, useUpdateProductMutation } from "~/services/product/product.service";
+import { FaEdit } from "react-icons/fa";
+import { useCreateProductMutation, useGetProductQuery, useUpdateProductMutation } from "~/services/product/product.service";
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react';
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -15,7 +15,7 @@ export function ProductManager() {
     const {data: categories} = useGetProductCategoriesQuery();
     const [createProduct] = useCreateProductMutation();
     const [updateProduct] = useUpdateProductMutation();
-    const [deleteProduct] = useDeleteProductMutation();
+    // const [deleteProduct] = useDeleteProductMutation();
 
     console.log('products', products);
     console.log('categories', categories);
@@ -43,18 +43,18 @@ export function ProductManager() {
     };
     
     // handle delete product category
-    const handleDeleteProduct = async (id: string) => {
-        try {
-            await deleteProduct(id).unwrap();
-            Toastify('Xóa sản phẩm thành công', 201);
-            refetch();
-        } catch (error) {
-            const errorMessage =
-                (error as { data?: { message?: string } })?.data?.message ||
-                'Đã có lỗi xảy ra!';
-            Toastify(errorMessage, 400);
-        }
-    };
+    // const handleDeleteProduct = async (id: string) => {
+    //     try {
+    //         await deleteProduct(id).unwrap();
+    //         Toastify('Xóa sản phẩm thành công', 201);
+    //         refetch();
+    //     } catch (error) {
+    //         const errorMessage =
+    //             (error as { data?: { message?: string } })?.data?.message ||
+    //             'Đã có lỗi xảy ra!';
+    //         Toastify(errorMessage, 400);
+    //     }
+    // };
 
     // handle form submit
     const onSubmit = async (data: TProduct) => {
@@ -131,12 +131,12 @@ export function ProductManager() {
                                             <td>{product?.quantity ?? 0}</td>
                                             <td>{new Date(product.created_at!).toLocaleString('vi-VN')}</td>
                                             <td className="px-4 py-3 flex items-center justify-center space-x-2 mt-2">
-                                                <button
+                                                {/* <button
                                                     onClick={() => handleDeleteProduct(product.id!)}
                                                     className="bg-red-600 text-white px-3 py-1 rounded flex items-center"
                                                 >
                                                     <FaTrash className="mr-1" /> Xóa
-                                                </button>
+                                                </button> */}
                                                 <button
                                                     onClick={() => handleEditClick(product)}
                                                     className="bg-blue-600 text-white px-3 py-1 rounded flex items-center"

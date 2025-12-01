@@ -33,7 +33,7 @@ export const blogApi = createApi({
       { id: string; data: TPost }
     >({
       query: ({ id, data }) => ({
-        url: `/api/v1/news/${id}`,
+        url: `/api/v1/posts/${id}`,
         method: 'PUT',
         body: data,
       }),
@@ -42,7 +42,7 @@ export const blogApi = createApi({
 
     deleteBlog: builder.mutation<void, string>({
       query: (id) => ({
-        url: `/api/v1/news/${id}`,
+        url: `/api/v1/posts/${id}`,
         method: 'DELETE',
       }),
       invalidatesTags: ['News'],

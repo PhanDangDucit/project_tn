@@ -1,18 +1,18 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { FaEdit, FaPlus, FaTrash } from "react-icons/fa";
+import { FaEdit, FaPlus } from "react-icons/fa";
 import { Toastify } from "~/helpers/Toastify";
 import { TProductCategory } from "~/interfaces/types/product-category";
 import { Button } from 'react-daisyui';
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react';
 // import { FaTimes } from "react-icons/fa";
-import { useCreateProductCategoryMutation, useDeleteProductCategoryMutation, useGetProductCategoriesQuery, useUpdateProductCategoryMutation } from "~/services/product-category/productCategories.service";
+import { useCreateProductCategoryMutation, useGetProductCategoriesQuery, useUpdateProductCategoryMutation } from "~/services/product-category/productCategories.service";
 
 export function ProductCategoryManager() {
     const { data: productCategories, isLoading, refetch } = useGetProductCategoriesQuery();
     const [createProductCategory] = useCreateProductCategoryMutation();
     const [updateProductCategory] = useUpdateProductCategoryMutation();
-    const [deleteProductCategory] = useDeleteProductCategoryMutation();
+    // const [deleteProductCategory] = useDeleteProductCategoryMutation();
 
     const [showModal, setShowModal] = useState(false);
     const [selectedProductCategory, setselectedProductCategory] = useState<TProductCategory | null>(null);
@@ -32,18 +32,18 @@ export function ProductCategoryManager() {
     };
     
     // handle delete product category
-    const handleDeleteProductCategory = async (id: string) => {
-        try {
-            await deleteProductCategory(id).unwrap();
-            Toastify('Xóa danh mục sản phẩm thành công', 201);
-            refetch();
-        } catch (error) {
-            const errorMessage =
-                (error as { data?: { message?: string } })?.data?.message ||
-                'Đã có lỗi xảy ra!';
-            Toastify(errorMessage, 400);
-        }
-    };
+    // const handleDeleteProductCategory = async (id: string) => {
+    //     try {
+    //         await deleteProductCategory(id).unwrap();
+    //         Toastify('Xóa danh mục sản phẩm thành công', 201);
+    //         refetch();
+    //     } catch (error) {
+    //         const errorMessage =
+    //             (error as { data?: { message?: string } })?.data?.message ||
+    //             'Đã có lỗi xảy ra!';
+    //         Toastify(errorMessage, 400);
+    //     }
+    // };
 
     // handle form submit
     const onSubmit = async (data: TProductCategory) => {
@@ -112,12 +112,12 @@ export function ProductCategoryManager() {
                                             <td>{category?.name ?? ""}</td>
                                             <td>{new Date(category.created_at!).toLocaleString('vi-VN')}</td>
                                             <td className="px-4 py-3 flex items-center justify-center space-x-2 mt-2">
-                                                <button
+                                                {/* <button
                                                     onClick={() => handleDeleteProductCategory(category.id!)}
                                                     className="bg-red-600 text-white px-3 py-1 rounded flex items-center"
                                                 >
                                                     <FaTrash className="mr-1" /> Xóa
-                                                </button>
+                                                </button> */}
                                                 <button
                                                     onClick={() => handleEditClick(category)}
                                                     className="bg-blue-600 text-white px-3 py-1 rounded flex items-center"
