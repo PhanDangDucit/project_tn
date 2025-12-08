@@ -11,9 +11,12 @@ export default function OrderDetail() {
 
     const order = orderData?.data;
 
-    const formatPrice = (num: number) => {
-        return num.toLocaleString('vi-VN');
-    };
+    // const formatPrice = (num: number) => {
+    //     return num.toLocaleString('vi-VN');
+    // };
+    function formatPrice(price: string, currency: string) {
+      return Number(price).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,') + currency;
+    }
     
     if (isOrderLoading) {
         return <div className="text-center py-20">Đang tải chi tiết đơn hàng...</div>;
@@ -63,8 +66,8 @@ export default function OrderDetail() {
                       {item.product.name}
                     </h3>
                     <p className="font-semibold">Số lượng: {item.quantity}</p>
-                    <p className="font-semibold">Giá: {formatPrice(item.price)} đ</p>
-                    <p className="font-semibold">Thành tiền: {formatPrice(item.price * item.quantity)} đ</p>
+                    <p className="font-semibold">Giá: {formatPrice(String(item.price) ?? 0, '₫')}</p>
+                    <p className="font-semibold">Thành tiền: {formatPrice(String(item.price * item.quantity) ?? 0, '₫')}</p>
                   </div>
                 </div>
               </div>
@@ -87,17 +90,17 @@ export default function OrderDetail() {
             <div className="space-y-4 mb-6 pb-6 border-t border-gray-200 pt-6">
               <div className="flex justify-between text-sm">
                 <span className="text-gray-600">Tạm tính:</span>
-                <span>{formatPrice(order.total)} đ</span>
+                <span>{formatPrice(String(order.total) ?? 0, '₫')}</span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-gray-600">Giảm giá:</span>
-                <span>{formatPrice(order.discount || 0)} đ</span>
+                <span>{formatPrice(String(order.discount) ?? 0, '₫')}</span>
               </div>
             </div>
 
             <div className="flex justify-between font-bold text-lg mb-6">
               <span>Tổng cộng:</span>
-              <span>{formatPrice(order.final_total)} đ</span>
+              <span>{formatPrice(String(order.final_total) ?? 0, '₫')}</span>
             </div>
           </div>
         </div>

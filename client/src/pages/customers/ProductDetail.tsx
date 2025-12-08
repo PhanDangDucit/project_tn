@@ -32,6 +32,9 @@ export default function ProductDetail() {
   const [category, setCategory] = useState<string>('');
 
   const [product, setProduct] = useState<TProduct|null>(null);
+  function formatPrice(price: string, currency: string) {
+    return Number(price).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,') + currency;
+  }
 
   useEffect(() => {
     if(!productData) return;
@@ -125,7 +128,7 @@ export default function ProductDetail() {
               <span className="text-xs font-semibold bg-gray-100 px-3 py-1 rounded-full">MỚI</span>
               <h1 className="text-3xl font-bold mt-4 mb-2">{product.name}</h1>
               <p className="text-sm text-gray-600 mb-4">{category ?? ""}</p>
-              <p className="text-2xl font-bold">{product?.price?.toLocaleString('vi-VN')} đ</p>
+              <p className="text-2xl font-bold">{formatPrice(String(product?.price) ?? 0, '₫')}</p>
             </div>
 
             <div className="flex gap-4">

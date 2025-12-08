@@ -37,6 +37,7 @@ export function OrderManager() {
   const onSubmit: SubmitHandler<TOrder> = async (data) => {
     if (!selectedOrder) return;
     try {
+      console.log('data is posted::', data);
       await updateOrder({ id: selectedOrder.id!, data }).unwrap();
       Toastify('Cập nhật đơn hàng thành công', 200);
       setShowModal(false);
@@ -46,9 +47,12 @@ export function OrderManager() {
     }
   };
 
-  const formatPrice = (num: number) => {
-    return num.toLocaleString('vi-VN');
-  };
+  // const formatPrice = (num: number) => {
+  //   return num.toLocaleString('vi-VN');
+  // };
+  function formatPrice(price: string, currency: string) {
+    return Number(price).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,') + currency;
+  }
 
   const filteredOrders = orderDatas?.data?.filter((order: TGetAllOrder) => {
     const orderStatusMatch = orderStatusFilter === 'all' || order.order_status === orderStatusFilter;
@@ -137,7 +141,7 @@ export function OrderManager() {
                       <td className="text-center p-2">{order.code}</td>
                       <td className="text-center">{order.customer?.email ?? 'N/A'}</td>
                       <td className="text-center capitalize">{order.order_status}</td>
-                      <td className="text-center">{formatPrice(order.final_total)} đ</td>
+                      <td className="text-center">{formatPrice(String(order.final_total) ?? 0, '₫')}</td>
                       <td className="text-center">{order.is_payment ? 'Đã thanh toán' : 'Chưa thanh toán'}</td>
                       <td className="text-center">{new Date(order.created_at!).toLocaleString('vi-VN')}</td>
                       <td className="px-4 py-3 flex items-center justify-center space-x-2">
@@ -202,9 +206,9 @@ export function OrderManager() {
                     </div>
                     <div>
                       <label htmlFor="is_payment" className="block text-sm font-medium text-gray-700">Trạng thái thanh toán</label>
-                      <select id="is_payment" {...register('is_payment', {setValueAs: (v) => v == '1'})} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 border">
-                        <option value="true">Đã thanh toán</option>
-                        <option value="false">Chưa thanh toán</option>
+                      <select id="is_payment" {...register('is_payment')} name='is_payment' className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 border">
+                        <option value="1">Đã thanh toán</option>
+                        <option value="0">Chưa thanh toán</option>
                       </select>
                     </div>
                   </div>

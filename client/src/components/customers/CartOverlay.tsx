@@ -35,9 +35,9 @@ export default function CartOverlay({ isOpen, onClose }: CartOverlayProps) {
     return sum + price * quantity;
   }, 0) ?? 0;
 
-  const formatPrice = (num: number) => {
-    return num.toLocaleString('vi-VN');
-  };
+  // const formatPrice = (num: number) => {
+  //   return num.toLocaleString('vi-VN');
+  // };
 
   const handleViewCart = () => {
     navigate('/cart');
@@ -61,6 +61,9 @@ export default function CartOverlay({ isOpen, onClose }: CartOverlayProps) {
       Toastify('Cập nhật số lượng thất bại', 400);
     }
   };
+  function formatPrice(price: string, currency: string) {
+    return Number(price).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,') + currency;
+  }
 
   return (
     <>
@@ -139,7 +142,7 @@ export default function CartOverlay({ isOpen, onClose }: CartOverlayProps) {
                         {item?.name}
                       </h4>
                       {/* <p className="text-xs text-gray-600 mb-2">Size: {item?.size}</p> */}
-                      <p className="font-bold text-sm">{item?.price}</p>
+                      <p className="font-bold text-sm">{formatPrice(String(item?.price) ?? 0, '₫')}</p>
                     </div>
 
                     {/* Remove Button */}
@@ -178,7 +181,7 @@ export default function CartOverlay({ isOpen, onClose }: CartOverlayProps) {
           <div className="border-t border-gray-200 p-6 bg-gray-50">
             <div className="flex justify-between font-bold text-lg mb-4">
               <span>Tổng cộng:</span>
-              <span>{formatPrice(total)} đ</span>
+              <span>{formatPrice(String(total) ?? 0, '₫')}</span>
             </div>
 
             <button

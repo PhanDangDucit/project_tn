@@ -25,6 +25,9 @@ export default function ProductSection({ title, subtitle, products }: ProductSec
       });
     }
   };
+  function formatPrice(price: string, currency: string) {
+    return Number(price).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,') + currency;
+  }
 
   return (
     <section className="max-w-7xl mx-auto px-4 py-16">
@@ -77,7 +80,7 @@ export default function ProductSection({ title, subtitle, products }: ProductSec
             </div>
             <h4 className="font-medium text-sm mb-1">{product.name}</h4>
             <p className="text-xs text-gray-600 mb-2">{product.description}</p>
-            <p className="text-sm font-semibold">{product.price}</p>
+            <p className="text-sm font-semibold">{formatPrice(String(product?.price) ?? 0, '₫')}</p>
           </div>
         ))}
       </div>

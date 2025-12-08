@@ -27,9 +27,12 @@ export default function ShoppingCart() {
 
   
 
-  const formatPrice = (num: number) => {
-    return num.toLocaleString('vi-VN');
-  };
+  // const formatPrice = (num: number) => {
+  //   return num.toLocaleString('vi-VN');
+  // };
+  function formatPrice(price: string, currency: string) {
+    return Number(price).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,') + currency;
+  }
 
   if (cartItems.length === 0) {
     return (
@@ -122,7 +125,7 @@ export default function ShoppingCart() {
                       {item.name}
                     </h3>
                     {/* <p className="text-sm text-gray-600 mb-2">Size: {item.size}</p> */}
-                    <p className="font-semibold">{item.price}</p>
+                    <p className="font-semibold">{formatPrice(String(item?.price) ?? 0, '₫')}</p>
                   </div>
 
                   {/* Quantity Controls */}
@@ -161,7 +164,7 @@ export default function ShoppingCart() {
             <div className="space-y-4 mb-6 pb-6 border-b border-gray-200">
               <div className="flex justify-between text-sm">
                 <span className="text-gray-600">Tạm tính:</span>
-                <span>{formatPrice(total)} đ</span>
+                <span>{formatPrice(String(total) ?? 0, '₫')}</span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-gray-600">Phí vận chuyển:</span>
@@ -175,7 +178,7 @@ export default function ShoppingCart() {
 
             <div className="flex justify-between font-bold text-lg mb-6">
               <span>Tổng cộng:</span>
-              <span>{formatPrice(total)} đ</span>
+              <span>{formatPrice(String(total) ?? 0, '₫')}</span>
             </div>
 
             <button className="w-full bg-black text-white py-3 rounded-full font-semibold hover:bg-gray-800 transition mb-3 cursor-pointer" 

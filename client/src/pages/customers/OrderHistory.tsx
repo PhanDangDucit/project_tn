@@ -18,9 +18,12 @@ export const OrderHistory: React.FC<object> = () => {
   const {data: orderDatas, isLoading} = useGetOrdersByUserIdQuery(userData?.data?.id!);
   const [cancelOrder] = useCancelOrderMutation();
   
-  const formatPrice = (num: number) => {
-      return num.toLocaleString('vi-VN');
-  };
+  // const formatPrice = (num: number) => {
+  //     return num.toLocaleString('vi-VN');
+  // };
+  function formatPrice(price: string, currency: string) {
+    return Number(price).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,') + currency;
+  }
   const handleCancelOrder = async (orderId: string) => {
     if (window.confirm('Bạn có chắc chắn muốn hủy đơn hàng này không?')) {
       try {
@@ -100,7 +103,7 @@ export const OrderHistory: React.FC<object> = () => {
                           <tr>
                             <td className='text-center'>{order.code}</td>
                             <td className='text-center'></td>
-                            <td className='text-center'>{formatPrice(order.final_total)} đ</td>
+                            <td className='text-center'>{formatPrice(String(order.final_total) ?? 0, '₫')}</td>
                             <td className='text-center'>{order.is_payment? "đã thanh toán" : "chưa thanh toán"}</td>
                             <td className='text-center'>{new Date(order.created_at!).toLocaleString('vi-VN')}</td>
                             <td className="px-4 py-3 flex items-center justify-center space-x-2 mt-2">
