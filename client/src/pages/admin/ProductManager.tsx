@@ -87,6 +87,10 @@ export function ProductManager() {
         setShowModal(true);
     }
 
+    function formatPrice(price: string, currency: string) {
+        return Number(price).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,') + currency;
+    }
+
     return (
         <div className="px-20 py-10">
             <div className="flex justify-between">
@@ -127,7 +131,7 @@ export function ProductManager() {
                                                 <img src={product.image ?? "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRnbkwbU36ZqP0s6_Ltc3z7t0n1sGvavBn6mA&s"} alt="image" className="w-20 h-20"/>
                                             </td>
                                             <td>{product?.name ?? ""}</td>
-                                            <td>{product?.price?.toLocaleString('vi-VN')}₫</td>
+                                            <td>{formatPrice(String(product?.price) ?? 0, '₫')}</td>
                                             <td>{product?.quantity ?? 0}</td>
                                             <td>{new Date(product.created_at!).toLocaleString('vi-VN')}</td>
                                             <td className="px-4 py-3 flex items-center justify-center space-x-2 mt-2">
