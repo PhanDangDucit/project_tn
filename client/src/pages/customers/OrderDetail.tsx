@@ -3,17 +3,22 @@ import { ArrowLeft } from 'lucide-react';
 import { nanoid } from '@reduxjs/toolkit';
 import { useGetOrderByIdQuery } from '~/services/order/order.service';
 import { TGetAllOrderDetail } from '~/interfaces/types/order';
+import { useCreateVnpPaymentMutation } from '~/services/payments/payment.service';
 
 export default function OrderDetail() {
     const navigate = useNavigate();
+    const [createVnpPayment] = useCreateVnpPaymentMutation();
     const { id } = useParams<{ id: string }>();
     const { data: orderData, isLoading: isOrderLoading } = useGetOrderByIdQuery(id!);
 
     const order = orderData?.data;
 
-    // const formatPrice = (num: number) => {
-    //     return num.toLocaleString('vi-VN');
-    // };
+    const handlePayment = async() => {
+      const dataResponse = await createVnpPayment({
+        id: order?.id!,
+      }).unwrap();
+      dataResponse.data && window.location.replace(dataResponse.data.payment_url as unknown as string);
+    }
     function formatPrice(price: string, currency: string) {
       return Number(price).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,') + currency;
     }
@@ -24,6 +29,9 @@ export default function OrderDetail() {
     
     if (!order) {
         return <div className="text-center py-20">Không tìm thấy đơn hàng.</div>;
+    }
+    const validatePayment = () => {
+      return order.payment?.name.toUpperCase() == "VNPAY" && order.is_payment == false && (order.order_status.toUpperCase() =="PENDING" || order.order_status.toUpperCase() == "DELIVERING" || order.order_status.toUpperCase() == "RECEIVED")
     }
 
   return (
@@ -104,6 +112,14 @@ export default function OrderDetail() {
             </div>
           </div>
         </div>
+        {
+          validatePayment() && <button
+            onClick={handlePayment}
+            className="w-full lg:w-auto bg-blue-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-700 transition mt-4"
+          >
+            Thanh toán với VNPAY
+          </button>
+        }
       </div>
     </div>
   );
