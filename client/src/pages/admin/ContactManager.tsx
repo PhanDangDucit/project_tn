@@ -13,7 +13,7 @@ export function ContactManager() {
                 <div className="mt-4">
                     {!contactDatas?.data?.length ? (
                         <div className="col-span-full text-center text-gray-500">
-                            Không có danh mục nào!
+                            Không có liên hệ nào!
                         </div>
                     ) : (
                     <table className="w-full">
