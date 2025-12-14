@@ -93,7 +93,7 @@ const Header = () => {
                   <p className="text-black">Notification</p>
                 </li>
                 <Button
-                  className="w-full justify-start cursor-pointer flex items-center"
+                  className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center"
                   onClick={handleLogout}
                   // disabled={isLoading}
                 >

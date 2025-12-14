@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { useGetCustomerQuery, useUpdateCustomerMutation } from "~/services/customer/customer.service";
 import { ICustomer } from "~/interfaces/types/user";
 import { Toastify } from "~/helpers/Toastify";
+import { getLinkImage } from "~/constants/functions";
 
 export function CustomerManager() {
     const { data: customers, isLoading, refetch } = useGetCustomerQuery();
@@ -76,7 +77,7 @@ export function CustomerManager() {
                                         <th>Tên</th>
                                         <th>Email</th>
                                         <th>Số điện thoại</th>
-                                        {/* <th>Trạng thái</th> */}
+                                        <th>Trạng thái</th>
                                         <th>Thời gian tạo</th>
                                         <th>Hành động</th>
                                     </thead>
@@ -84,18 +85,18 @@ export function CustomerManager() {
                                         {customers?.data?.map((customer: ICustomer) => (
                                         <tr className="text-center">
                                             <td>{customer.id}</td>
-                                            <td className="flex justify-center">
-                                                <img src={customer.avatar ?? "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRnbkwbU36ZqP0s6_Ltc3z7t0n1sGvavBn6mA&s"} alt="image" className="w-20 h-20"/>
+                                            <td className="flex justify-center py-2">
+                                                <img src={getLinkImage(customer?.avatar)} alt="image" className="w-20 h-20 rounded-full object-cover"/>
                                             </td>
                                             <td>{customer?.full_name ?? ""}</td>
                                             <td>{customer?.email ?? ""}</td>
                                             <td>{customer?.phone ?? ""}</td>
-                                            {/* <td>{!customer?.is_block ? "Hoạt động" : "Không hoạt động"}</td> */}
+                                            <td>{!customer?.is_block ? "Hoạt động" : "Bị chặn"}</td>
                                             <td>{new Date(customer.created_at!).toLocaleString('vi-VN')}</td>
-                                            <td className="px-4 py-3 flex items-center justify-center space-x-2 mt-2">
+                                            <td className="">
                                                 <button
                                                     onClick={() =>handleEditClick(customer)}
-                                                    className="bg-blue-600 text-white px-3 py-1 rounded flex items-center"
+                                                    className="bg-blue-600 text-white px-3 py-1 rounded flex items-center mx-auto"
                                                 >
                                                     <FaEdit className="mr-1" /> Sửa
                                                 </button>
@@ -188,21 +189,20 @@ export function CustomerManager() {
                                                     <p className="text-red-500 text-sm ">{errors.address.message}</p>
                                                 )}
                                             </div>
-                                            {/* <div className="mt-2">
+                                            <div className="mt-2">
                                                 <label className="label">Trạng thái chặn </label>
                                                 <select
                                                     {...register('is_block')}
                                                     className="w-full bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border border-slate-200 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow"
                                                 >
-                                                    <option value="0" selected>Chọn trạng thái</option>
-                                                    <option value="1">
+                                                    <option value={1}>
                                                         Chặn tài khoản
                                                     </option>
-                                                    <option value="0">
+                                                    <option value={0}>
                                                         Bỏ chặn tài khoản
                                                     </option>
                                                 </select>
-                                            </div> */}
+                                            </div>
                                             <div className="mt-2">
                                                 <label className="label">Giới tính</label>
                                                 <select

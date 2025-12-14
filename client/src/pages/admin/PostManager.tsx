@@ -113,30 +113,32 @@ export function PostManager() {
                   {posts?.data?.map((post: TPost) => (
                     <tr key={post.id} className="text-center">
                       <td>{post.id}</td>
-                      <td className="flex justify-center">
+                      <td className="flex justify-center py-5">
                         <img
                           src={post.thumbnail ?? 'https://via.placeholder.com/80'}
                           alt={post.title}
-                          className="w-20 h-20 object-cover"
+                          className="w-40 h-40 object-cover"
                         />
                       </td>
                       <td>{post.title}</td>
                       <td>{categories?.data?.find(c => c.id === post.category_id)?.name || 'N/A'}</td>
                       <td>{post.view_count ?? 0}</td>
                       <td>{new Date(post.created_at!).toLocaleString('vi-VN')}</td>
-                      <td className="px-4 py-3 flex items-center justify-center space-x-2 mt-2">
-                        <button
-                          onClick={() => handleDeletePost(post.id!)}
-                          className="bg-red-600 text-white px-3 py-1 rounded flex items-center"
-                        >
-                          <FaTrash className="mr-1" /> Xóa
-                        </button>
-                        <button
-                          onClick={() => handleEditClick(post)}
-                          className="bg-blue-600 text-white px-3 py-1 rounded flex items-center"
-                        >
-                          <FaEdit className="mr-1" /> Sửa
-                        </button>
+                      <td>
+                        <div className='flex items-center justify-center gap-2'>
+                          <button
+                            onClick={() => handleDeletePost(post.id!)}
+                            className="bg-red-600 text-white px-3 py-1 rounded flex items-center"
+                          >
+                            <FaTrash className="mr-1" /> Xóa
+                          </button>
+                          <button
+                            onClick={() => handleEditClick(post)}
+                            className="bg-blue-600 text-white px-3 py-1 rounded flex items-center"
+                          >
+                            <FaEdit className="mr-1" /> Sửa
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))}
