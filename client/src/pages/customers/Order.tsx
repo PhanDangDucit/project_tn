@@ -1,6 +1,5 @@
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
-import { useGetMeQuery } from '~/services/auth/auth.services';
 import { useDeleteAllCartDetailMutation, useGetCartDetailByCustomerIdQuery } from '~/services/cart/cart.service';
 import { useGetProductQuery } from '~/services/product/product.service';
 import { nanoid } from '@reduxjs/toolkit';
@@ -9,6 +8,8 @@ import { useForm } from 'react-hook-form';
 import { useCreateOrderMutation } from '~/services/order/order.service';
 import { useCreateOrderDetailByOrderIdMutation } from '~/services/order/order-detail.service';
 import { Toastify } from '~/helpers/Toastify';
+import { useAppSelector } from '~/hooks/HookRouter';
+import { RootState } from '~/redux/storage/store';
 
 type TOrderForm = {
   full_name: string;
@@ -19,8 +20,8 @@ type TOrderForm = {
 
 export default function Order() {
   const navigate = useNavigate();
-  const { data: userData } = useGetMeQuery();
-  const { data: cartData } = useGetCartDetailByCustomerIdQuery(userData?.data?.id!);
+  const {currentUser: userData} = useAppSelector((state: RootState) => state.auth);
+  const { data: cartData } = useGetCartDetailByCustomerIdQuery(userData?.id!);
   const { data: products } = useGetProductQuery();
   const { data: paymentMethodsData } = useGetPaymentMethodsQuery();
   const [createOrder] = useCreateOrderMutation();
@@ -51,7 +52,7 @@ export default function Order() {
     try {
       // 1. Create Order
       const orderResponse = await createOrder({
-        customer_id: userData?.data?.id!,
+        customer_id: userData?.id!,
         total,
         address: data.address,
         phone: data.phone,
@@ -76,7 +77,7 @@ export default function Order() {
       }
 
       // 3. Clear the cart
-      await deleteAllCartDetails(userData?.data?.id!).unwrap();
+      await deleteAllCartDetails(userData?.id!).unwrap();
 
       Toastify('Đặt hàng thành công!', 201);
       navigate('/order-history');
@@ -146,7 +147,7 @@ export default function Order() {
                         id="fullName"
                         className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-black"
                         placeholder="Nhập họ và tên ..."
-                        defaultValue={userData?.data?.full_name}
+                        defaultValue={userData?.full_name}
                         {...register('full_name', { required: 'Họ và tên là bắt buộc' })}
                       />
                       {errors.full_name && <p className="text-red-500 text-sm">{errors.full_name.message}</p>}
@@ -160,7 +161,7 @@ export default function Order() {
                         id="address"
                         className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-black"
                         placeholder="Nhập địa chỉ ..."
-                        defaultValue={userData?.data?.address}
+                        defaultValue={userData?.address}
                         {...register('address', { required: 'Địa chỉ là bắt buộc' })}
                       />
                       {errors.address && <p className="text-red-500 text-sm">{errors.address.message}</p>}
@@ -174,7 +175,7 @@ export default function Order() {
                         id="phone"
                         className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-black"
                         placeholder="Nhập số điện thoại ..."
-                        defaultValue={userData?.data?.phone}
+                        defaultValue={userData?.phone}
                         {...register('phone', { required: 'Số điện thoại là bắt buộc' })}
                       />
                       {errors.phone && <p className="text-red-500 text-sm">{errors.phone.message}</p>}

@@ -16,7 +16,8 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <Provider store={reduxStore.store}>
       <PersistGate
-        loading={<LoadingPage loading={true} />}
+        // loading={<LoadingPage loading={true} />}
+        loading={null}
         persistor={persistor}
       >
         <BrowserRouter>

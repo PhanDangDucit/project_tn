@@ -1,26 +1,22 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
-
 import { ProfileSidebar } from '~/layouts/pages/user/ProfileSidebar';
 import { FaEdit } from 'react-icons/fa';
 import { Eye } from 'lucide-react';
 import { useCancelOrderMutation, useGetOrdersByUserIdQuery } from '~/services/order/order.service';
-import { useGetMeQuery } from '~/services/auth/auth.services';
 import { TOrder } from '~/interfaces/types/order';
 import { Toastify } from '~/helpers/Toastify';
-
+import { useAppSelector } from '~/hooks/HookRouter';
+import { RootState } from '~/redux/storage/store';
 
 export const OrderHistory: React.FC<object> = () => {
+  const {currentUser: userData} = useAppSelector((state: RootState) => state.auth);
   const [orderStatus, setOrderStatus] = useState<string>("pending");
   const navigate = useNavigate();
-  const { data: userData } = useGetMeQuery();
-  const {data: orderDatas, isLoading} = useGetOrdersByUserIdQuery(userData?.data?.id!);
+  const {data: orderDatas, isLoading} = useGetOrdersByUserIdQuery(userData?.id!);
   const [cancelOrder] = useCancelOrderMutation();
-  
-  // const formatPrice = (num: number) => {
-  //     return num.toLocaleString('vi-VN');
-  // };
+
   function formatPrice(price: string, currency: string) {
     return Number(price).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,') + currency;
   }

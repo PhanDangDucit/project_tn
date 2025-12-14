@@ -23,6 +23,7 @@ const baseQuery = fetchBaseQuery({
     const token = (
       state as RootState
     ).auth.accessToken;
+    console.log('token in auth services:', token);
     if (token) {
       headers.set('Authorization', `Bearer ${token}`);
     }
@@ -47,14 +48,14 @@ export const authApi = createApi({
   keepUnusedDataFor: 5,
   tagTypes: ['User'],
   endpoints: (builder) => ({
-    adminLogin: builder.mutation<IResponse<{ accessToken: string }>, IRequestCredentials>({
+    adminLogin: builder.mutation<IResponse<{ accessToken: string, user: Partial<ICustomer> }>, IRequestCredentials>({
       query: (credentials) => ({
         url: '/api/v1/auth/admin/login',
         method: 'POST',
         body: credentials,
       }),
     }),
-    login: builder.mutation<IResponse<{ accessToken: string }>, IRequestCredentials>({
+    login: builder.mutation<IResponse<{ accessToken: string, user: Partial<ICustomer> }>, IRequestCredentials>({
       query: (credentials) => ({
         url: '/api/v1/auth/login',
         method: 'POST',

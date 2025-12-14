@@ -3,13 +3,14 @@ import { useNavigate } from "react-router-dom";
 import { Toastify } from "~/helpers/Toastify";
 import { ICustomer } from "~/interfaces/types/user";
 import { ProfileSidebar } from "~/layouts/pages/user/ProfileSidebar"
-import { useGetMeQuery } from "~/services/auth/auth.services";
 import { useUpdateCustomerMutation } from "~/services/customer/customer.service";
+import { useAppSelector } from '~/hooks/HookRouter';
+import { RootState } from '~/redux/storage/store';
 
 export const UpdateProfile: React.FC<object> = () => {
-    const { data: userData, refetch } = useGetMeQuery();
     const [updateCustomer, { isLoading }] = useUpdateCustomerMutation();
     const navigate = useNavigate();
+    const {currentUser: userData} = useAppSelector((state: RootState) => state.auth);
     
     const {
         register,
@@ -18,15 +19,14 @@ export const UpdateProfile: React.FC<object> = () => {
     } = useForm<ICustomer>();
 
     const onSubmit: SubmitHandler<ICustomer> = async (data) => {
-        if (!userData?.data?.id) return;
+        if (!userData?.id) return;
 
         try {
             await updateCustomer({
-                id: String(userData.data.id),
+                id: String(userData.id),
                 data,
             }).unwrap();
             Toastify('Cập nhật thông tin thành công', 200);
-            refetch();
             navigate('/profile');
         } catch (error) {
             Toastify('Cập nhật thông tin thất bại', 400);
@@ -52,7 +52,7 @@ export const UpdateProfile: React.FC<object> = () => {
                                         placeholder="Nhập họ tên"
                                         {...register('full_name')}
                                         type="text"                                        
-                                        defaultValue={userData?.data?.full_name ?? ""}
+                                        defaultValue={userData?.full_name ?? ""}
                                     />
                                     {errors?.full_name && (
                                         <div className="text-[#e53e3e]">
@@ -66,7 +66,7 @@ export const UpdateProfile: React.FC<object> = () => {
                                         className='p-4 outline-1 outline-black text-gray-400'
                                         placeholder="Nhập Email"
                                         type="text"
-                                        defaultValue={userData?.data?.email}
+                                        defaultValue={userData?.email}
                                         disabled
                                     />
                                 </div>
@@ -78,7 +78,7 @@ export const UpdateProfile: React.FC<object> = () => {
                                         {...register('phone')}
                                         type="text"
                                         name="phone"
-                                        defaultValue={userData?.data?.phone}
+                                        defaultValue={userData?.phone}
                                     />
                                     {errors?.phone && (
                                         <div className="text-[#e53e3e]">
@@ -94,7 +94,7 @@ export const UpdateProfile: React.FC<object> = () => {
                                         {...register('address')}
                                         type="text"
                                         name="address"
-                                        defaultValue={userData?.data?.address}
+                                        defaultValue={userData?.address}
                                     />
                                     {errors?.address && (
                                         <div className="text-[#e53e3e]">

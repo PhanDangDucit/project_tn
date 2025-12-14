@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useUpdateAvatarCustomerMutation } from '~/services/customer/customer.service';
-import { useGetMeQuery } from '~/services/auth/auth.services';
 import { toast } from 'react-toastify';
+import { useAppSelector } from '~/hooks/HookRouter';
+import { RootState } from '~/redux/storage/store';
 
 interface ChangeAvatarModalProps {
   isOpen: boolean;
@@ -9,7 +10,7 @@ interface ChangeAvatarModalProps {
 }
 
 export const ChangeAvatarModal: React.FC<ChangeAvatarModalProps> = ({ isOpen, onClose }) => {
-  const { data: userData, refetch } = useGetMeQuery();
+  const {currentUser: userData} = useAppSelector((state: RootState) => state.auth);
   const [updateAvatarCustomer, { isLoading }] = useUpdateAvatarCustomerMutation();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
@@ -34,19 +35,18 @@ export const ChangeAvatarModal: React.FC<ChangeAvatarModalProps> = ({ isOpen, on
   };
 
   const handleSubmit = async () => {
-    if (!selectedFile || !userData?.data?.id) return;
+    if (!selectedFile || !userData?.id) return;
 
     const formData = new FormData();
     formData.append('avatar', selectedFile);
 
     try {
       await updateAvatarCustomer({
-        id: String(userData.data.id),
+        id: String(userData.id),
         data: formData,
       }).unwrap();
       toast.success('Avatar updated successfully!');
       onClose();
-      refetch();
     } catch (error) {
       toast.error('Failed to update avatar.');
     }

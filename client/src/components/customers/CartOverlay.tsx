@@ -1,9 +1,10 @@
 import { nanoid } from '@reduxjs/toolkit';
+import { RootState } from '~/redux/storage/store';
 import { X, Trash2, Plus, Minus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Toastify } from '~/helpers/Toastify';
+import { useAppSelector } from '~/hooks/HookRouter';
 import { TCartDetail } from '~/interfaces/types/cart-detail';
-import { useGetMeQuery } from '~/services/auth/auth.services';
 import { useDeleteCartDetailMutation, useGetCartDetailByCustomerIdQuery, useUpdateCartDetailMutation } from '~/services/cart/cart.service';
 import { useGetProductQuery } from '~/services/product/product.service';
 
@@ -13,8 +14,8 @@ interface CartOverlayProps {
 }
 
 export default function CartOverlay({ isOpen, onClose }: CartOverlayProps) {
-  const { data: userData } = useGetMeQuery();
-  const { data: cartData } = useGetCartDetailByCustomerIdQuery(userData?.data?.id!);
+  const {currentUser: userData} = useAppSelector((state: RootState) => state.auth);
+  const { data: cartData } = useGetCartDetailByCustomerIdQuery(userData?.id!);
   const { data: products } = useGetProductQuery();
   const [updateCartDetail] = useUpdateCartDetailMutation();
   const [removeCartDetail] = useDeleteCartDetailMutation();

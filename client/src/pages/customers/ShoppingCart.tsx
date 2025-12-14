@@ -1,31 +1,29 @@
 import { useNavigate } from 'react-router-dom';
 import { Trash2, Plus, Minus, ArrowLeft } from 'lucide-react';
 // import { useCart } from '../../context/CartContext';
-import { useGetMeQuery } from '~/services/auth/auth.services';
 import { useDeleteCartDetailMutation, useGetCartDetailByCustomerIdQuery, useUpdateCartDetailMutation } from '~/services/cart/cart.service';
 import { useGetProductQuery } from '~/services/product/product.service';
 import { nanoid } from '@reduxjs/toolkit';
 import { Toastify } from '~/helpers/Toastify';
 import { TCartDetail } from '~/interfaces/types/cart-detail';
+import { useAppSelector } from '~/hooks/HookRouter';
+import { RootState } from '~/redux/storage/store';
 
 export default function ShoppingCart() {
   const navigate = useNavigate();
-  // const { cartItems, removeFromCart, updateQuantity } = useCart();
-   const { data: userData } = useGetMeQuery();
-    const { data: cartData } = useGetCartDetailByCustomerIdQuery(userData?.data?.id!);
-    const { data: products } = useGetProductQuery();
-    const [updateCartDetail] = useUpdateCartDetailMutation();
-    const [removeCartDetail] = useDeleteCartDetailMutation();
+  const {currentUser: userData} = useAppSelector((state: RootState) => state.auth);
+  const { data: cartData } = useGetCartDetailByCustomerIdQuery(userData?.id!);
+  const { data: products } = useGetProductQuery();
+  const [updateCartDetail] = useUpdateCartDetailMutation();
+  const [removeCartDetail] = useDeleteCartDetailMutation();
   
-    const cartItems = cartData?.data?.map(cartItem => {
-      const productFiltered = products?.data?.find(product => product.id === cartItem.product_id);
-      return {
-        ...productFiltered,
-        ...cartItem
-      }
-    }) ?? [];
-
-  
+  const cartItems = cartData?.data?.map(cartItem => {
+    const productFiltered = products?.data?.find(product => product.id === cartItem.product_id);
+    return {
+      ...productFiltered,
+      ...cartItem
+    }
+  }) ?? [];
 
   // const formatPrice = (num: number) => {
   //   return num.toLocaleString('vi-VN');

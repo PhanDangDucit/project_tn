@@ -1,8 +1,6 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { Share2, ChevronLeft, Check } from 'lucide-react';
 import { useEffect, useState } from 'react';
-// import { useCart } from '../../context/CartContext';
-// import { allProducts } from '../../../db/products';
 import ProductEmpty from '~/components/customers/product/ProductEmpty';
 import { useAppSelector } from '~/hooks/HookRouter';
 import { RootState } from '~/redux/storage/store';
@@ -12,12 +10,10 @@ import { useGetProductQuery } from '~/services/product/product.service';
 import { TProduct } from '~/interfaces/types/product';
 import { useGetProductCategoriesQuery } from '~/services/product-category/productCategories.service';
 import { useCreateCartDetailMutation } from '~/services/cart/cart.service';
-import { useGetMeQuery } from '~/services/auth/auth.services';
 
 export default function ProductDetail() {
   const auth = useAppSelector((state: RootState) => state.auth);
-  const { data: userData } = useGetMeQuery();
-  
+  const {currentUser: userData} = useAppSelector((state: RootState) => state.auth);  
   const { id } = useParams();
   const navigate = useNavigate();
   // const { addToCart } = useCart();
@@ -66,13 +62,13 @@ export default function ProductDetail() {
     console.log('Adding to cart', {
       product_id: product?.id!,
       quantity,
-      customer_id: userData?.data?.id!,
+      customer_id: userData?.id!,
     });
     try {
       await addProductToCart({
         product_id: product?.id!,
         quantity,
-        customer_id: userData?.data?.id!,
+        customer_id: userData?.id!,
       }).unwrap();
       setAddedToCart(true);
     } catch (error) {

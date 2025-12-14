@@ -1,8 +1,11 @@
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { Toastify } from "~/helpers/Toastify";
-import { useChangePasswordMutation, useGetMeQuery } from "~/services/auth/auth.services";
-import { ProfileSidebar } from "~/layouts/pages/user/ProfileSidebar"
+import { useChangePasswordMutation } from "~/services/auth/auth.services";
+import { ProfileSidebar } from "~/layouts/pages/user/ProfileSidebar";
+import { useAppSelector } from '~/hooks/HookRouter';
+import { RootState } from '~/redux/storage/store';
+
 type ChangePasword = {
     oldPassword: string;
     password: string;
@@ -10,8 +13,8 @@ type ChangePasword = {
 }
 export const ChangePassword: React.FC<object> = () => {
     const navigate = useNavigate();
-    const { data: userData } = useGetMeQuery();
     const [changePassword, { isLoading }] = useChangePasswordMutation();
+    const {currentUser: userData} = useAppSelector((state: RootState) => state.auth);
     
     const {
     register,
@@ -21,7 +24,7 @@ export const ChangePassword: React.FC<object> = () => {
     } = useForm<ChangePasword>();
     
     const onSubmit: SubmitHandler<ChangePasword> = async (data) => {
-        if (!userData?.data?.id) {
+        if (!userData?.id) {
             Toastify("Không tìm thấy thông tin người dùng", 400);
             return;
         }

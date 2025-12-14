@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Toastify } from "~/helpers/Toastify";
 import { useLogoutHandler } from "~/hooks/useLogoutHandler";
-import { useGetMeQuery, useLogoutMutation } from "~/services/auth/auth.services";
+import {  useLogoutMutation } from "~/services/auth/auth.services";
 import { RootState } from '~/redux/storage/store';
 import { useAppSelector } from '~/hooks/HookRouter';
 import { ILogoutError } from "~/interfaces/types/auth/auth";
@@ -12,8 +12,8 @@ import { ICustomer } from "~/interfaces/types/user";
 
 
 export function UserDropDown() {
-  const { data: userData, refetch } = useGetMeQuery();
   const [customer, setCustomer] = useState<ICustomer | null>(null);
+  const {currentUser: userData} = useAppSelector((state: RootState) => state.auth);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const userMenuRef = useRef<HTMLDivElement | null>(null);
   // Handle logout
@@ -22,8 +22,8 @@ export function UserDropDown() {
   const navigate = useNavigate();
   const auth = useAppSelector((state: RootState) => state.auth);
   useEffect(() => {
-    setCustomer(userData?.data ?? null);
-  }, [userData?.data])
+    setCustomer(userData ?? null);
+  }, [userData])
 
   const handleLogout = async () => {
     try {
@@ -32,7 +32,6 @@ export function UserDropDown() {
       logoutHandler();
       Toastify('Đăng xuất thành công', 201);
       navigate('/', { replace: true });
-      refetch();
     } catch (error) {
       const err = error as ILogoutError;
       if (err.data?.message === 'Không tìm thấy session để xóa') {
@@ -42,8 +41,6 @@ export function UserDropDown() {
       }
     }
   };
-  console.log("customer", customer);
-  console.log("userData?.data", userData?.data);
   
   useEffect(() => {
       function handleClickOutside(e: MouseEvent) {

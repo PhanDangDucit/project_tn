@@ -2,6 +2,7 @@ import { createSlice, isAnyOf } from '@reduxjs/toolkit';
 import { authApi } from './auth.services';
 // import { IAuth, IAuthState } from '../../interfaces/types/auth/auth';
 import { IAuthState } from '../../interfaces/types/auth/auth';
+import { REHYDRATE } from 'redux-persist';
 // import { IUserLogin } from '~/interfaces/types/user';
 
 const initialState: IAuthState = {
@@ -30,10 +31,12 @@ const authSlice = createSlice({
         accessToken: action.payload,
       }
     },
-    setAuthCurrentUser: (state, action) => ({
+    setAuthCurrentUser: (state, action) => {
+      console.log('Setting current user:', action.payload);
+      return {
       ...state,
       currentUser: action.payload,
-    }),
+    }},
     setAuthData: (state, action) => {
       console.log('state:', state);
       console.log('Setting auth data with token:', action.payload);
@@ -47,9 +50,16 @@ const authSlice = createSlice({
    * Service fullfiled matcher to handle login response
    */
   extraReducers: (builder) => {
+    builder.addCase(REHYDRATE, (state) => {
+      state.loggedIn = state.accessToken ? true : false;
+      state.errorMessage = null;
+      state.currentUser = null;
+      state.role = null;
+    })
     builder.addMatcher(
       isAnyOf(authApi.endpoints.login.matchFulfilled),
       (state, action) => {
+        // action with post /login
         const response = action.payload;
         console.log('authSlice login response:', response);
         if (response?.status == 200) {
@@ -57,6 +67,7 @@ const authSlice = createSlice({
           state.errorMessage = null;
           state.accessToken = response?.data?.accessToken;
           state.role = "customer";
+          state.currentUser = response?.data?.user ?? null;
         } else {
           state.loggedIn = false;
           state.errorMessage = "Login failed. Please check your credentials.";
@@ -74,6 +85,7 @@ const authSlice = createSlice({
           state.errorMessage = null;
           state.accessToken = response?.data?.accessToken;
           state.role = "admin";
+          state.currentUser = response?.data?.user ?? null;
         } else {
           state.loggedIn = false;
           state.errorMessage = "Login failed. Please check your credentials.";
