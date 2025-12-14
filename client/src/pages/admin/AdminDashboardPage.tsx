@@ -9,17 +9,17 @@ import {
 } from 'react-icons/fa';
 import { useGetOrdersQuery } from '~/services/order/order.service';
 import { useGetCustomerQuery } from '~/services/customer/customer.service';
-import { useGetProductCategoriesQuery } from '~/services/product-category/productCategories.service';
 import { useGetBlogsQuery } from '~/services/blog/blog.services';
 import LoadingLocal from '~/components/loading/LoadingLocal';
 import { Link } from 'react-router-dom';
 import { getLinkImage } from '~/constants/functions';
+import { useGetProductQuery } from '~/services/product/product.service';
 
 const AdminDashboardPage: React.FC = () => {
   const { data: ordersData, isLoading: ordersLoading } = useGetOrdersQuery();
   const { data: usersData, isLoading: usersLoading } = useGetCustomerQuery();
   const { data: productsData, isLoading: productsLoading } =
-    useGetProductCategoriesQuery();
+    useGetProductQuery();
   const { data: blogsData } = useGetBlogsQuery();
   console.log('Orders Data:', ordersData);
 
