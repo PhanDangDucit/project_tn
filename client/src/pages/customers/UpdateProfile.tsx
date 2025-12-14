@@ -4,14 +4,15 @@ import { Toastify } from "~/helpers/Toastify";
 import { ICustomer } from "~/interfaces/types/user";
 import { ProfileSidebar } from "~/layouts/pages/user/ProfileSidebar"
 import { useUpdateCustomerMutation } from "~/services/customer/customer.service";
-import { useAppSelector } from '~/hooks/HookRouter';
+import { useAppDispatch, useAppSelector } from '~/hooks/HookRouter';
 import { RootState } from '~/redux/storage/store';
+import { setAuthCurrentUser } from "~/services/auth/auth.slice";
 
 export const UpdateProfile: React.FC<object> = () => {
     const [updateCustomer, { isLoading }] = useUpdateCustomerMutation();
     const navigate = useNavigate();
     const {currentUser: userData} = useAppSelector((state: RootState) => state.auth);
-    
+    const dispatch = useAppDispatch();
     const {
         register,
         handleSubmit,
@@ -20,12 +21,13 @@ export const UpdateProfile: React.FC<object> = () => {
 
     const onSubmit: SubmitHandler<ICustomer> = async (data) => {
         if (!userData?.id) return;
-
+        console.log('data submit update profile:: ', data);
         try {
             await updateCustomer({
                 id: String(userData.id),
                 data,
             }).unwrap();
+            dispatch(setAuthCurrentUser({ ...userData, ...data }));
             Toastify('Cập nhật thông tin thành công', 200);
             navigate('/profile');
         } catch (error) {

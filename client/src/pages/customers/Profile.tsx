@@ -10,6 +10,7 @@ import { RootState } from '~/redux/storage/store';
 export const Profile: React.FC<object> = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const {currentUser: userData} = useAppSelector((state: RootState) => state.auth);
+    console.log('userData profile:: ', userData);
     
     return (
         <div className="flex flex-wrap py-20 max-w-[1200px] mx-auto">
