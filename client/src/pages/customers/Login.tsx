@@ -27,10 +27,13 @@ const LoginPage: React.FC<object> = () => {
 
       setErr(false);
       Toastify('Đăng nhập thành công', 200);
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Login error:', error);
-      // const errorData = isIErrorResponse(error) ? error.data : null;
-      Toastify(`Đăng nhập thất bại`, 400);
+      if(error.status === 403) {
+        Toastify(`Tài khoản của bạn đã bị khóa`, 400);
+      } else {
+        Toastify(`Đăng nhập thất bại`, 400);
+      }
       setErr(true);
     }
   };

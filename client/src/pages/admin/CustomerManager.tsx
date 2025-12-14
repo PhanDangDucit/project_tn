@@ -1,4 +1,4 @@
-import { FaEdit } from "react-icons/fa";
+import { FaEdit, FaPlus } from "react-icons/fa";
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react';
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -6,10 +6,14 @@ import { useGetCustomerQuery, useUpdateCustomerMutation } from "~/services/custo
 import { ICustomer } from "~/interfaces/types/user";
 import { Toastify } from "~/helpers/Toastify";
 import { getLinkImage } from "~/constants/functions";
+import { nanoid } from "@reduxjs/toolkit";
+import { Button } from "react-daisyui";
+import { useRegisterMutation } from "~/services/auth/auth.services";
 
 export function CustomerManager() {
     const { data: customers, isLoading, refetch } = useGetCustomerQuery();
     const [updateCustomer] = useUpdateCustomerMutation();
+    const [createCustomer] = useRegisterMutation();
     
     const [showModal, setShowModal] = useState(false);
     const [selectedCustomer, setSelectedCustomer] = useState<ICustomer | null>(null);
@@ -42,6 +46,11 @@ export function CustomerManager() {
                     data,
                 }).unwrap();
                 Toastify('Cập nhật khách hàng thành công', 201);
+            } else {
+                await createCustomer({
+                    ...data
+                }).unwrap();
+                Toastify('Thêm khách hàng thành công', 201);
             }
             reset();
             setShowModal(false);
@@ -54,10 +63,19 @@ export function CustomerManager() {
         }
     };
 
+    const handleClickAddCustomer = () => {
+        setSelectedCustomer(null);
+        reset();
+        setShowModal(true);
+    }
+
     return (
         <div className="px-20 py-10">
             <div className="flex justify-between">
                 <h1 className="font-bold text-3xl">Khách hàng</h1>
+                <Button onClick={handleClickAddCustomer} className="flex items-center space-x-2 bg-black text-white px-3 rounded-2xl">
+                    <FaPlus /><span>Thêm khách hàng</span>
+                </Button>
             </div>
             <div className="mt-4">
                 {isLoading ? (
@@ -71,19 +89,21 @@ export function CustomerManager() {
                         ) : (
                             <>
                                 <table className="w-full">
-                                    <thead className="">
-                                        <th>ID</th>
-                                        <th>Hình ảnh</th>
-                                        <th>Tên</th>
-                                        <th>Email</th>
-                                        <th>Số điện thoại</th>
-                                        <th>Trạng thái</th>
-                                        <th>Thời gian tạo</th>
-                                        <th>Hành động</th>
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Hình ảnh</th>
+                                            <th>Tên</th>
+                                            <th>Email</th>
+                                            <th>Số điện thoại</th>
+                                            <th>Trạng thái</th>
+                                            <th>Thời gian tạo</th>
+                                            <th>Hành động</th>
+                                        </tr>
                                     </thead>
                                     <tbody>
                                         {customers?.data?.map((customer: ICustomer) => (
-                                        <tr className="text-center">
+                                        <tr className="text-center" key={nanoid()}>
                                             <td>{customer.id}</td>
                                             <td className="flex justify-center py-2">
                                                 <img src={getLinkImage(customer?.avatar)} alt="image" className="w-20 h-20 rounded-full object-cover"/>
@@ -152,71 +172,91 @@ export function CustomerManager() {
                                                     <p className="text-red-500 text-sm ">{errors.email.message}</p>
                                                 )}
                                             </div>
-                                            <div className="mt-2">
-                                                <label className="label">Tên khách hàng </label>
-                                                <input
-                                                    {...register('full_name', {
-                                                        required: 'Tên khách hàng là bắt buộc',
-                                                    })}
-                                                    type="text"
-                                                    placeholder="Nhập tên khách hàng"
-                                                    className="w-full bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border border-slate-200 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow"
-                                                />
-                                                {errors.full_name && (
-                                                    <p className="text-red-500 text-sm ">{errors.full_name.message}</p>
-                                                )}
-                                            </div>
+                                            {!selectedCustomer && (
+                                                <div className="mt-2">
+                                                    <label className="label">Mật khẩu</label>
+                                                    <input
+                                                        {...register('password', {
+                                                            required: 'Mật khẩu là bắt buộc',
+                                                        })}
+                                                        type="password"
+                                                        placeholder="Nhập mật khẩu"
+                                                        className="w-full bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border border-slate-200 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow"
+                                                    />
+                                                    {errors.password && (
+                                                        <p className="text-red-500 text-sm ">{errors.password.message}</p>
+                                                    )}
+                                                </div>)}
+                                            {selectedCustomer ? (
+                                                <>
+                                                    <div className="mt-2">
+                                                        <label className="label">Tên khách hàng </label>
+                                                        <input 
+                                                            type="text"
+                                                            {...register('full_name', {
+                                                                required: 'Tên khách hàng là bắt buộc',
+                                                            })}
+                                                            placeholder="Nhập tên khách hàng"
+                                                            className="w-full bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border border-slate-200 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow"
+                                                        />
+                                                        {errors.full_name && (
+                                                            <p className="text-red-500 text-sm ">{errors.full_name.message}</p>
+                                                        )}
+                                                    </div>
 
-                                            <div className="mt-2">
-                                                <label className="label">Số điện thoại</label>
-                                                <textarea
-                                                    {...register('phone')}
-                                                    placeholder="Nhập số điện thoại khách hàng"
-                                                    className="w-full bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border border-slate-200 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow"
-                                                />
-                                                {errors.phone && (
-                                                    <p className="text-red-500 text-sm ">{errors.phone.message}</p>
-                                                )}
-                                            </div>
-                                            <div className="mt-2">
-                                                <label className="label">Địa chỉ </label>
-                                                <textarea
-                                                    {...register('address')}
-                                                    placeholder="Nhập địa chỉ khách hàng"
-                                                    className="w-full bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border border-slate-200 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow"
-                                                />
-                                                {errors.address && (
-                                                    <p className="text-red-500 text-sm ">{errors.address.message}</p>
-                                                )}
-                                            </div>
-                                            <div className="mt-2">
-                                                <label className="label">Trạng thái chặn </label>
-                                                <select
-                                                    {...register('is_block')}
-                                                    className="w-full bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border border-slate-200 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow"
-                                                >
-                                                    <option value={1}>
-                                                        Chặn tài khoản
-                                                    </option>
-                                                    <option value={0}>
-                                                        Bỏ chặn tài khoản
-                                                    </option>
-                                                </select>
-                                            </div>
-                                            <div className="mt-2">
-                                                <label className="label">Giới tính</label>
-                                                <select
-                                                    {...register('sex')}
-                                                    className="w-full bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border border-slate-200 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow"
-                                                >
-                                                    <option value="nam">
-                                                        Nam
-                                                    </option>
-                                                    <option value="nu">
-                                                        Nữ
-                                                    </option>
-                                                </select>
-                                            </div>
+                                                    <div className="mt-2">
+                                                        <label className="label">Số điện thoại</label>
+                                                        <textarea
+                                                            {...register('phone')}
+                                                            placeholder="Nhập số điện thoại khách hàng"
+                                                            className="w-full bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border border-slate-200 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow"
+                                                        />
+                                                        {errors.phone && (
+                                                            <p className="text-red-500 text-sm ">{errors.phone.message}</p>
+                                                        )}
+                                                    </div>
+                                                    <div className="mt-2">
+                                                        <label className="label">Địa chỉ </label>
+                                                        <textarea
+                                                            {...register('address')}
+                                                            placeholder="Nhập địa chỉ khách hàng"
+                                                            className="w-full bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border border-slate-200 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow"
+                                                        />
+                                                        {errors.address && (
+                                                            <p className="text-red-500 text-sm ">{errors.address.message}</p>
+                                                        )}
+                                                    </div>
+                                                    <div className="mt-2">
+                                                        <label className="label" htmlFor="is_block">Trạng thái hoạt động</label>
+                                                        <select
+                                                            {...register('is_block')}
+                                                            name="is_block"
+                                                            className="w-full bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border border-slate-200 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow"
+                                                        >
+                                                            <option value={1}>
+                                                                Chặn tài khoản
+                                                            </option>
+                                                            <option value={0}>
+                                                                Hoạt động
+                                                            </option>
+                                                        </select>
+                                                    </div>
+                                                    <div className="mt-2">
+                                                        <label className="label">Giới tính</label>
+                                                        <select
+                                                            {...register('sex')}
+                                                            className="w-full bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border border-slate-200 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow"
+                                                        >
+                                                            <option value="nam">
+                                                                Nam
+                                                            </option>
+                                                            <option value="nu">
+                                                                Nữ
+                                                            </option>
+                                                        </select>
+                                                    </div>
+                                                </>
+                                            ) : null}
                                         </div>
                                     </div>
                                 </div>
