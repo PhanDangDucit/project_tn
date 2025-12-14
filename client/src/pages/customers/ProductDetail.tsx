@@ -40,7 +40,7 @@ export default function ProductDetail() {
       return;
     }
     setProduct(product);
-  }, [productData]);
+  }, [productData, id]);
 
   useEffect(() => {
     if(product) {
