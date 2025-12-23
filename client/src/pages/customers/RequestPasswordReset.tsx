@@ -49,7 +49,7 @@ export default function RequestPasswordResetPage() {
   const onSubmitCode: SubmitHandler<CodeForm> = async (data) => {
     try {
       // using email as user_id for verify; adjust if backend expects numeric id
-      await verifyCode({ user_id: emailValue, code: data.code }).unwrap();
+      await verifyCode({ email: emailValue, code: data.code }).unwrap();
       Toastify('Mã hợp lệ, vui lòng nhập mật khẩu mới', 200);
       setStep(3);
     } catch (err) {
@@ -63,9 +63,7 @@ export default function RequestPasswordResetPage() {
       return;
     }
     try {
-      // here we use the code as token — backend may differ
-      const token = window.prompt('Vui lòng nhập lại mã đã được gửi (nếu cần)') || '';
-      const payload: IResetPasswordRequest = { token, newPassword: data.newPassword };
+      const payload: IResetPasswordRequest = {email: emailValue,password: data.newPassword };
       await resetPassword(payload).unwrap();
       Toastify('Đổi mật khẩu thành công, đăng nhập lại', 200);
       navigate('/login');

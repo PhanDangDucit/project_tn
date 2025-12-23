@@ -86,7 +86,7 @@ export const authApi = createApi({
     }),
     verifyCode: builder.mutation<
       { message: string },
-      { user_id: string; code: string }
+      { email: string; code: string }
     >({
       query: (verifyData) => ({
         url: '/api/v1/auth/verify-code',

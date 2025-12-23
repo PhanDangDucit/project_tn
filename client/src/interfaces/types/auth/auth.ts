@@ -32,8 +32,8 @@ export interface IRequestPasswordReset {
 }
 
 export interface IResetPasswordRequest {
-  token: string;
-  newPassword: string;
+  email: string;
+  password: string;
 }
 
 export interface ILogoutError {
