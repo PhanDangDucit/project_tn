@@ -14,6 +14,14 @@ export const productsApi = createApi({
       providesTags: ['Products'],
     }),
 
+    getProductSearch: builder.query<IResponse<TProduct[]>, string | void>({
+      query: (keyword) => {
+        const q = keyword ? `?keyword=${encodeURIComponent(keyword)}` : '';
+        return `/api/v1/products/search${q}`;
+      },
+      // providesTags: ['Products'],
+    }),
+
     getProductById: builder.query<IResponse<TProduct>, string>({
       query: (id) => `/api/v1/products/${id}`,
       providesTags: ['Products'],
@@ -52,6 +60,7 @@ export const productsApi = createApi({
 
 export const {
   useGetProductQuery,
+  useGetProductSearchQuery,
   useGetProductByIdQuery,
   useCreateProductMutation,
   useUpdateProductMutation,

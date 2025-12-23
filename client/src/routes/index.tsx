@@ -19,6 +19,7 @@ import { NewsPage } from '~/pages/customers/News';
 import { PostCategoriesPage } from '~/pages/customers/PostCategories';
 import ProductCategoryPage from '~/pages/customers/ProductCategory';
 import ProductDetail from '~/pages/customers/ProductDetail';
+import SearchResultsPage from '~/pages/customers/SearchResults';
 import ShoppingCart from '~/pages/customers/ShoppingCart';
 import UserLayout from '~/layouts/pages/user/UserLayout';
 import { OrderHistory } from '~/pages/customers/OrderHistory';
@@ -51,6 +52,7 @@ export default function AppRoutes() {
         <Route path="/posts/:id" element={<NewsPage />} />
         <Route path="/post-categories" element={<PostCategoriesPage />} />
         <Route path="/category/:id" element={<ProductCategoryPage />} />
+        <Route path="/search" element={<SearchResultsPage />} />
         <Route path="/product/:id" element={<ProductDetail />} />
         
         <Route element={<NotLoggedMiddleware />}>

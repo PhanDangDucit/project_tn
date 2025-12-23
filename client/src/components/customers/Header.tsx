@@ -2,15 +2,25 @@ import { Search, ShoppingBag } from 'lucide-react';
 import { Navigation } from './Navigation';
 import { UserDropDown } from './UserDropDown';
 import { Logo } from '~/assets/images';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useGetCartDetailByCustomerIdQuery } from '~/services/cart/cart.service';
 import { useAppSelector } from '~/hooks/HookRouter';
 import { RootState } from '~/redux/storage/store';
+import { useState } from 'react';
 
 export function Header({ onCartClick }: { onCartClick: () => void }) {
   const {currentUser: userData} = useAppSelector((state: RootState) => state.auth);
   const { data: cartData } = useGetCartDetailByCustomerIdQuery(userData?.id!);
   const cartCount = cartData?.data?.reduce((total, item) => total + item.quantity, 0) || 0;
+  const [keyword, setKeyword] = useState('');
+  const navigate = useNavigate();
+
+  const handleSearch = () => {
+    if (keyword.trim()) {
+      navigate(`/search?keyword=${encodeURIComponent(keyword.trim())}`);
+      setKeyword('');
+    }
+  };
   
   return (
     <>
@@ -28,10 +38,15 @@ export function Header({ onCartClick }: { onCartClick: () => void }) {
               <div className="relative">
                 <input
                   type="text"
+                  value={keyword}
+                  onChange={(e) => setKeyword(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
                   placeholder="Tìm kiếm sản phẩm..."
                   className="w-full px-4 py-2 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-300"
                 />
-                <Search className="absolute right-3 top-2.5 w-5 h-5 text-gray-400" />
+                <button onClick={handleSearch} className="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600">
+                  <Search className="w-5 h-5" />
+                </button>
               </div>
             </div>
 
