@@ -72,7 +72,7 @@ export const authApi = createApi({
     }),
     requestPasswordReset: builder.mutation<void, IRequestPasswordReset>({
       query: (requestPasswordReset) => ({
-        url: '/api/v1/auth/request-password-reset',
+        url: '/api/v1/auth/forgot-password',
         method: 'POST',
         body: requestPasswordReset,
       }),

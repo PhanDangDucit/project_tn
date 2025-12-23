@@ -4,13 +4,14 @@ import { Eye } from 'lucide-react';
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { TGetAllOrder, TOrder } from '~/interfaces/types/order';
-import { useGetOrdersQuery, useUpdateOrderMutation } from '~/services/order/order.service';
+import { useGetOrdersQuery, useUpdateOrderMutation, useLazyGetOrdersExportQuery } from '~/services/order/order.service';
 import { Toastify } from '~/helpers/Toastify';
 import { useNavigate } from 'react-router-dom';
 
 export function OrderManager() {
   const { data: orderDatas, isLoading, refetch } = useGetOrdersQuery();
   const [updateOrder] = useUpdateOrderMutation();
+  const [triggerExport] = useLazyGetOrdersExportQuery();
   const navigate = useNavigate();
 
   const [orderStatusFilter, setOrderStatusFilter] = useState<string>('all');
@@ -111,6 +112,40 @@ export function OrderManager() {
             <option value="paid">Đã thanh toán</option>
             <option value="unpaid">Chưa thanh toán</option>
           </select>
+          <button
+            onClick={async () => {
+              try {
+                const res = await triggerExport();
+                // triggerExport may return an object with `data` or the blob directly
+                const maybeBlob = (res as any)?.data ?? (res as any);
+                let finalBlob: Blob;
+                if (maybeBlob instanceof Blob) {
+                  finalBlob = maybeBlob;
+                } else if (typeof maybeBlob === 'string') {
+                  finalBlob = new Blob([maybeBlob], { type: 'text/csv;charset=utf-8;' });
+                } else {
+                  // fallback to JSON stringify
+                  finalBlob = new Blob([JSON.stringify(maybeBlob)], { type: 'text/csv;charset=utf-8;' });
+                }
+
+                const url = window.URL.createObjectURL(finalBlob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `orders_${new Date().toISOString()}.csv`;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                window.URL.revokeObjectURL(url);
+                Toastify('Xuất CSV thành công', 200);
+              } catch (err) {
+                Toastify('Xuất CSV thất bại', 400);
+              }
+            }}
+            className="border p-2 rounded bg-white hover:bg-gray-100"
+          >
+            Xuất CSV
+          </button>
+          
         </div>
       </div>
       <div className="mt-4">

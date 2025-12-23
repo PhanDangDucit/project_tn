@@ -14,6 +14,10 @@ export const orderApi = createApi({
       query: () => '/api/v1/orders',
       providesTags: ['Orders'],
     }),
+    getOrdersExport: builder.query<Blob, void>({
+      query: () => ({ url: '/api/v1/orders/export/csv', responseHandler: async (response) => response.blob() }),
+      providesTags: ['Orders'],
+    }),
     getOrdersByUserId: builder.query({
       query: (customer_id) => `/api/v1/orders/customers/${customer_id}`,
       providesTags: ['Orders'],
@@ -76,6 +80,8 @@ export const orderApi = createApi({
 
 export const {
   useGetOrdersQuery,
+  useGetOrdersExportQuery,
+  useLazyGetOrdersExportQuery,
   useGetOrdersByUserIdQuery,
   useGetOrdersPaginationQuery,
   useGetOrderByIdQuery,

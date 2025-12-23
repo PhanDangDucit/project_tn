@@ -39,6 +39,7 @@ const AdminLoginPage = lazy(() => import('../pages/admin/AdminLoginPage'));
 const HomePage = lazy(() => import('../pages/home/HomePage'));
 const LoginPage = lazy(() => import('../pages/customers/Login'));
 const RegisterPage = lazy(() => import('../pages/customers/Register'));
+const RequestPasswordResetPage = lazy(() => import('../pages/customers/RequestPasswordReset'));
 const NotFound = lazy(() => import('~/pages/404/NotFound'));
 
 export default function AppRoutes() {
@@ -58,6 +59,7 @@ export default function AppRoutes() {
         <Route element={<NotLoggedMiddleware />}>
           <Route path="login" element={<LoginPage />} />
           <Route path="register" element={<RegisterPage />} />
+          <Route path="request-password-reset" element={<RequestPasswordResetPage />} />
         </Route>
         <Route
           path="/"
