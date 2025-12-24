@@ -63,13 +63,6 @@ export default function Footer() {
               <a href="#" className="hover:text-white transition">ĐĂNG KÝ EMAIL</a>
             </div>
           </div>
-
-          <div className="flex gap-2">
-            <img src="https://via.placeholder.com/40x25/4A5568/FFFFFF?text=VISA" alt="Visa" className="h-6" />
-            <img src="https://via.placeholder.com/40x25/4A5568/FFFFFF?text=MC" alt="Mastercard" className="h-6" />
-            <img src="https://via.placeholder.com/40x25/4A5568/FFFFFF?text=AMEX" alt="Amex" className="h-6" />
-            <img src="https://via.placeholder.com/40x25/4A5568/FFFFFF?text=PP" alt="PayPal" className="h-6" />
-          </div>
         </div>
 
         <div className="flex justify-between items-center mt-8 text-xs text-gray-500">
