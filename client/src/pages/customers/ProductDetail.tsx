@@ -106,17 +106,7 @@ export default function ProductDetail() {
                 className="w-full h-full object-cover"
               />
             </div>
-            <div className="grid grid-cols-4 gap-4">
-              {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="bg-gray-200 aspect-square rounded-lg overflow-hidden cursor-pointer hover:opacity-75 transition">
-                  <img
-                    src={product.image}
-                    alt={`${product.name} view ${i}`}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              ))}
-            </div>
+            
           </div>
 
           <div className="space-y-6">
