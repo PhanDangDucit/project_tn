@@ -9,8 +9,8 @@ export const productsApi = createApi({
   tagTypes: ['Products'],
   keepUnusedDataFor: 60,
   endpoints: (builder) => ({
-    getProduct: builder.query<IResponse<TProduct[]>, void>({
-      query: () => '/api/v1/products',
+    getProduct: builder.query<IResponse<TProduct[]>, number>({
+      query: (page:number) => `api/v1/products?page=${page}`,
       providesTags: ['Products'],
     }),
 
@@ -55,6 +55,10 @@ export const productsApi = createApi({
       }),
       invalidatesTags: ['Products'],
     }),
+    productCount: builder.query<IResponse<TProduct[]>, void>({
+      query: () => `api/v1/products/count`,
+      providesTags: ['Products'],
+    }),
   }),
 });
 
@@ -65,4 +69,5 @@ export const {
   useCreateProductMutation,
   useUpdateProductMutation,
   useDeleteProductMutation,
+  useProductCountQuery
 } = productsApi;

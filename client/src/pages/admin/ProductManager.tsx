@@ -1,5 +1,5 @@
 import { FaEdit } from "react-icons/fa";
-import { useCreateProductMutation, useGetProductQuery, useUpdateProductMutation } from "~/services/product/product.service";
+import { useCreateProductMutation, useDeleteProductMutation, useGetProductQuery, useProductCountQuery, useUpdateProductMutation } from "~/services/product/product.service";
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react';
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -8,18 +8,21 @@ import { Button } from 'react-daisyui';
 import { TProduct } from "~/interfaces/types/product";
 import { Toastify } from "~/helpers/Toastify";
 import { useGetProductCategoriesQuery } from "~/services/product-category/productCategories.service";
+import { useSearchParams } from "react-router";
+import { Pagination } from "~/components/Pagination";
 
 export function ProductManager() {
+    let [searchParams, setSearchParams] = useSearchParams();
 
-    const { data: products, isLoading, refetch } = useGetProductQuery();
+    const { data: products, isLoading, refetch } = useGetProductQuery(Number(searchParams.get("page")) ?? 1);
     const {data: categories} = useGetProductCategoriesQuery();
     const [createProduct] = useCreateProductMutation();
     const [updateProduct] = useUpdateProductMutation();
-    // const [deleteProduct] = useDeleteProductMutation();
-
-    console.log('products', products);
-    console.log('categories', categories);
-
+    const [deleteProduct] = useDeleteProductMutation();
+    const {data: totalItems} = useProductCountQuery();
+    // useEffect(() => {
+    //     console.log(searchParams.get("tab"));
+    //   }, [searchParams]);
     const [showModal, setShowModal] = useState(false);
     const [selectedProduct, setselectedProduct] = useState<TProduct | null>(null);
 
@@ -43,18 +46,18 @@ export function ProductManager() {
     };
     
     // handle delete product category
-    // const handleDeleteProduct = async (id: string) => {
-    //     try {
-    //         await deleteProduct(id).unwrap();
-    //         Toastify('Xóa sản phẩm thành công', 201);
-    //         refetch();
-    //     } catch (error) {
-    //         const errorMessage =
-    //             (error as { data?: { message?: string } })?.data?.message ||
-    //             'Đã có lỗi xảy ra!';
-    //         Toastify(errorMessage, 400);
-    //     }
-    // };
+    const handleDeleteProduct = async (id: string) => {
+        try {
+            await deleteProduct(id).unwrap();
+            Toastify('Xóa sản phẩm thành công', 201);
+            refetch();
+        } catch (error) {
+            const errorMessage =
+                (error as { data?: { message?: string } })?.data?.message ||
+                'Đã có lỗi xảy ra!';
+            Toastify(errorMessage, 400);
+        }
+    };
 
     // handle form submit
     const onSubmit = async (data: TProduct) => {
@@ -157,6 +160,11 @@ export function ProductManager() {
                    </>
                 )}
             </div>
+            <Pagination
+                page={Number(searchParams.get("page")) ?? 1}
+                totalItems={totalItems.data ?? 10}
+            />
+            
             {/* Popup */}
             <div>
                 <Dialog open={showModal} onClose={() => setShowModal(false)} className="relative z-10">
