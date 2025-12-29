@@ -14,7 +14,7 @@ import PostSection from '~/components/customers/home/PostSection';
 
 export default function HomePage() {
   const auth = useAppSelector((state: RootState) => state.auth);
-  const {data: products} = useGetProductQuery();
+  const {data: products} = useGetProductQuery(1);
   const {data: productCategories} = useGetProductCategoriesQuery();
 
   const [categorizedProducts, setCategorizedProducts] = useState<

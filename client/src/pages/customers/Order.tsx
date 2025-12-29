@@ -1,7 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
-import { useDeleteAllCartDetailMutation, useGetCartDetailByCustomerIdQuery } from '~/services/cart/cart.service';
-import { useGetProductQuery } from '~/services/product/product.service';
+import { useDeleteAllCartDetailMutation, useGetCartDetailByCustomerIdQuery, useGetProductInCartOfCustomerQuery } from '~/services/cart/cart.service';
 import { nanoid } from '@reduxjs/toolkit';
 import { useGetPaymentMethodsQuery } from '~/services/payment-methods/payment-method.service';
 import { useForm } from 'react-hook-form';
@@ -22,7 +21,8 @@ export default function Order() {
   const navigate = useNavigate();
   const {currentUser: userData} = useAppSelector((state: RootState) => state.auth);
   const { data: cartData } = useGetCartDetailByCustomerIdQuery(userData?.id!);
-  const { data: products } = useGetProductQuery();
+  const { data: products } = useGetProductInCartOfCustomerQuery(userData?.id!);
+  // const { data: products } = useGetProductQuery);
   const { data: paymentMethodsData } = useGetPaymentMethodsQuery();
   const [createOrder] = useCreateOrderMutation();
   const [createOrderDetail] = useCreateOrderDetailByOrderIdMutation();

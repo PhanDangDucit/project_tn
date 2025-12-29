@@ -1,12 +1,12 @@
 import { Heart } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useGetProductQuery } from '~/services/product/product.service';
+import { TProduct } from '~/interfaces/types/product';
+import { useGetRelatedProductsQuery } from '~/services/product/product.service';
 
-export default function ProductRelated({product}: {product: any}) {
+export default function ProductRelated({product}: {product: TProduct|null}) {
     const navigate = useNavigate();
-    const {data: products} = useGetProductQuery();
+    const {data: relatedProducts} = useGetRelatedProductsQuery(product?.category_id ?? '0');
     
-    const relatedProducts = products?.data?.filter(p => p.id !== product.id).slice(0, 8) ?? [];
 
   return (
     <div className="border-t border-gray-200 pt-16">
@@ -16,7 +16,7 @@ export default function ProductRelated({product}: {product: any}) {
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-4! gap-6">
-            {relatedProducts.map((relatedProduct) => (
+            {relatedProducts?.data?.map((relatedProduct) => (
               <div
                 key={relatedProduct.id}
                 onClick={() => {

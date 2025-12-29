@@ -1,8 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { Trash2, Plus, Minus, ArrowLeft } from 'lucide-react';
 // import { useCart } from '../../context/CartContext';
-import { useDeleteCartDetailMutation, useGetCartDetailByCustomerIdQuery, useUpdateCartDetailMutation } from '~/services/cart/cart.service';
-import { useGetProductQuery } from '~/services/product/product.service';
+import { useDeleteCartDetailMutation, useGetCartDetailByCustomerIdQuery, useGetProductInCartOfCustomerQuery, useUpdateCartDetailMutation } from '~/services/cart/cart.service';
 import { nanoid } from '@reduxjs/toolkit';
 import { Toastify } from '~/helpers/Toastify';
 import { TCartDetail } from '~/interfaces/types/cart-detail';
@@ -13,7 +12,7 @@ export default function ShoppingCart() {
   const navigate = useNavigate();
   const {currentUser: userData} = useAppSelector((state: RootState) => state.auth);
   const { data: cartData } = useGetCartDetailByCustomerIdQuery(userData?.id!);
-  const { data: products } = useGetProductQuery();
+  const { data: products } = useGetProductInCartOfCustomerQuery(userData?.id!);
   const [updateCartDetail] = useUpdateCartDetailMutation();
   const [removeCartDetail] = useDeleteCartDetailMutation();
   

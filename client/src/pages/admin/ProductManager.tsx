@@ -1,4 +1,4 @@
-import { FaEdit } from "react-icons/fa";
+import { FaEdit, FaTrash } from "react-icons/fa";
 import { useCreateProductMutation, useDeleteProductMutation, useGetProductQuery, useProductCountQuery, useUpdateProductMutation } from "~/services/product/product.service";
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react';
 import { useState } from "react";
@@ -10,19 +10,17 @@ import { Toastify } from "~/helpers/Toastify";
 import { useGetProductCategoriesQuery } from "~/services/product-category/productCategories.service";
 import { useSearchParams } from "react-router";
 import { Pagination } from "~/components/Pagination";
+import { nanoid } from "@reduxjs/toolkit";
 
 export function ProductManager() {
     let [searchParams, setSearchParams] = useSearchParams();
 
-    const { data: products, isLoading, refetch } = useGetProductQuery(Number(searchParams.get("page")) ?? 1);
+    const { data: products, isLoading, refetch } = useGetProductQuery(Number(searchParams.get("page") ?? "1"));
     const {data: categories} = useGetProductCategoriesQuery();
     const [createProduct] = useCreateProductMutation();
     const [updateProduct] = useUpdateProductMutation();
     const [deleteProduct] = useDeleteProductMutation();
-    const {data: totalItems} = useProductCountQuery();
-    // useEffect(() => {
-    //     console.log(searchParams.get("tab"));
-    //   }, [searchParams]);
+    const {data: totalItems, isLoading: isLoadingTotalItems} = useProductCountQuery();
     const [showModal, setShowModal] = useState(false);
     const [selectedProduct, setselectedProduct] = useState<TProduct | null>(null);
 
@@ -128,7 +126,7 @@ export function ProductManager() {
                                     </thead>
                                     <tbody>
                                         {products?.data?.map((product: TProduct) => (
-                                        <tr className="text-center">
+                                        <tr className="text-center" key={nanoid()}>
                                             <td>{product.id}</td>
                                             <td className="flex justify-center py-2">
                                                 <img src={product.image ?? "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRnbkwbU36ZqP0s6_Ltc3z7t0n1sGvavBn6mA&s"} alt="image" className="w-40 h-40 object-cover"/>
@@ -138,12 +136,12 @@ export function ProductManager() {
                                             <td>{product?.quantity ?? 0}</td>
                                             <td>{new Date(product.created_at!).toLocaleString('vi-VN')}</td>
                                             <td>
-                                                {/* <button
+                                                <button
                                                     onClick={() => handleDeleteProduct(product.id!)}
                                                     className="bg-red-600 text-white px-3 py-1 rounded flex items-center"
                                                 >
                                                     <FaTrash className="mr-1" /> Xóa
-                                                </button> */}
+                                                </button>
                                                 <button
                                                     onClick={() => handleEditClick(product)}
                                                     className="bg-blue-600 text-white px-3 py-1 rounded flex items-center mx-auto"
@@ -160,11 +158,13 @@ export function ProductManager() {
                    </>
                 )}
             </div>
-            <Pagination
-                page={Number(searchParams.get("page")) ?? 1}
-                totalItems={totalItems.data ?? 10}
-            />
-            
+            {
+                !isLoadingTotalItems && <Pagination
+                    page={Number(searchParams.get("page") ?? "1")}
+                    totalItems={totalItems?.data?.count ?? 11}
+                    onPageChange={(p) => setSearchParams({ page: String(p) })}
+                />
+            }
             {/* Popup */}
             <div>
                 <Dialog open={showModal} onClose={() => setShowModal(false)} className="relative z-10">

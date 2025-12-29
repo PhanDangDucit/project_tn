@@ -2,6 +2,7 @@ import { createApi } from '@reduxjs/toolkit/query/react';
 import { IResponse } from '~/interfaces/types/response';
 import { baseQueryWithReauth } from '../auth/auth.services';
 import { TCartDetail } from '~/interfaces/types/cart-detail';
+import { TProduct } from '~/interfaces/types/product';
 
 export const cartDetailApi = createApi({
   reducerPath: 'cartDetailApi',
@@ -59,6 +60,10 @@ export const cartDetailApi = createApi({
       }),
       invalidatesTags: ['CartDetails'],
     }),
+    getProductInCartOfCustomer: builder.query<IResponse<TProduct[]>, string>({
+      query: (customerId) => `/api/v1/cart-details/customer/${customerId}/products`,
+      providesTags: ['CartDetails'],
+    }),
   }),
 });
 
@@ -70,4 +75,5 @@ export const {
   useUpdateCartDetailMutation,
   useDeleteCartDetailMutation,
   useDeleteAllCartDetailMutation,
+  useGetProductInCartOfCustomerQuery
 } = cartDetailApi;

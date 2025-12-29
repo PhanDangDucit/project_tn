@@ -13,13 +13,13 @@ import { useGetBlogsQuery } from '~/services/blog/blog.services';
 import LoadingLocal from '~/components/loading/LoadingLocal';
 import { Link } from 'react-router-dom';
 import { getLinkImage } from '~/constants/functions';
-import { useGetProductQuery } from '~/services/product/product.service';
+import {useProductCountQuery } from '~/services/product/product.service';
 
 const AdminDashboardPage: React.FC = () => {
   const { data: ordersData, isLoading: ordersLoading } = useGetOrdersQuery();
   const { data: usersData, isLoading: usersLoading } = useGetCustomerQuery();
   const { data: productsData, isLoading: productsLoading } =
-    useGetProductQuery();
+    useProductCountQuery();
   const { data: blogsData } = useGetBlogsQuery();
   console.log('Orders Data:', ordersData);
 
@@ -50,7 +50,7 @@ const AdminDashboardPage: React.FC = () => {
 
   const totalOrders = ordersData?.data?.length || 0;
   const totalUsers = usersData?.data?.length || 0;
-  const totalProducts = productsData?.data?.length || 0;
+  const totalProducts = productsData?.data?.count || 0;
 
   const orderPieData = [
     {

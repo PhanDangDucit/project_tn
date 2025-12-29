@@ -26,6 +26,10 @@ export const productsApi = createApi({
       query: (id) => `/api/v1/products/${id}`,
       providesTags: ['Products'],
     }),
+    getProductsByCategoryId: builder.query<IResponse<TProduct[]>, string>({
+      query: (categoryId) => `/api/v1/products/category/${categoryId}`,
+      providesTags: ['Products'],
+    }),
 
     createProduct: builder.mutation<IResponse<TProduct>, TProduct>({
       query: (productCategoryData) => ({
@@ -55,8 +59,12 @@ export const productsApi = createApi({
       }),
       invalidatesTags: ['Products'],
     }),
-    productCount: builder.query<IResponse<TProduct[]>, void>({
+    productCount: builder.query<IResponse<{count:number}>, void>({
       query: () => `api/v1/products/count`,
+      providesTags: ['Products'],
+    }),
+    getRelatedProducts: builder.query<IResponse<TProduct[]>, string>({
+      query: (categoryId) => `/api/v1/products/related/${categoryId}`,
       providesTags: ['Products'],
     }),
   }),
@@ -69,5 +77,7 @@ export const {
   useCreateProductMutation,
   useUpdateProductMutation,
   useDeleteProductMutation,
-  useProductCountQuery
+  useProductCountQuery,
+  useGetRelatedProductsQuery,
+  useGetProductsByCategoryIdQuery,
 } = productsApi;

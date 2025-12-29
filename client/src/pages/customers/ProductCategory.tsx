@@ -2,28 +2,19 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Heart, ArrowLeft } from 'lucide-react';
 // import { allProducts, Product } from '../../../db/products';
 import { useGetProductCategoryByIdQuery } from '~/services/product-category/productCategories.service';
-import { useGetProductQuery } from '~/services/product/product.service';
-import { useEffect, useState } from 'react';
 import { TProduct } from '~/interfaces/types/product';
+import { useGetProductsByCategoryIdQuery } from '~/services/product/product.service';
 
 export default function ProductCategoryPage() {
   const { id } = useParams<{ id: string }>();
   
-  const {data: productData} = useGetProductQuery();
-  const {data: category, isLoading} = useGetProductCategoryByIdQuery(id!);
+  const {data: productData, isLoading} = useGetProductsByCategoryIdQuery(id?? '0');
+  const {data: category} = useGetProductCategoryByIdQuery(id ?? '0');
+  console.log('productData::', productData);
 
-  const [products, setProducts] = useState<TProduct[]>([]);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if(productData?.data && category?.data) {
-      const categorized = productData.data
-        .filter((product) => product.category_id == id);
-      setProducts(categorized);
-    }
-  }, [productData, category]);
-
-  if (!category && isLoading) {
+  if (!productData && isLoading) {
     return (
       <div className="min-h-screen bg-white">
         <div className="max-w-7xl mx-auto px-4 py-16">
@@ -52,7 +43,7 @@ export default function ProductCategoryPage() {
             Quay lại
           </button>
           <h1 className="text-4xl font-bold">{category?.data?.name ?? ""}</h1>
-          <p className="text-gray-600 mt-2">{products.length ?? 0} sản phẩm</p>
+          <p className="text-gray-600 mt-2">{productData?.data?.length ?? 0} sản phẩm</p>
         </div>
 
         {/* Filters */}
@@ -66,7 +57,7 @@ export default function ProductCategoryPage() {
         </div>
 
         {/* Products Grid */}
-        {products.length === 0 ? (
+        {productData?.data?.length === 0 ? (
           <div className="text-center py-16">
             <p className="text-gray-600 mb-4">Không có sản phẩm trong danh mục này</p>
             <button
@@ -78,7 +69,7 @@ export default function ProductCategoryPage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2! lg:grid-cols-4! gap-6">
-            {products.map((product) => (
+            {productData?.data?.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
           </div>

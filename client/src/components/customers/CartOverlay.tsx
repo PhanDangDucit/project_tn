@@ -5,8 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { Toastify } from '~/helpers/Toastify';
 import { useAppSelector } from '~/hooks/HookRouter';
 import { TCartDetail } from '~/interfaces/types/cart-detail';
-import { useDeleteCartDetailMutation, useGetCartDetailByCustomerIdQuery, useUpdateCartDetailMutation } from '~/services/cart/cart.service';
-import { useGetProductQuery } from '~/services/product/product.service';
+import { useDeleteCartDetailMutation, useGetCartDetailByCustomerIdQuery, useGetProductInCartOfCustomerQuery, useUpdateCartDetailMutation } from '~/services/cart/cart.service';
 
 interface CartOverlayProps {
   isOpen: boolean;
@@ -16,7 +15,7 @@ interface CartOverlayProps {
 export default function CartOverlay({ isOpen, onClose }: CartOverlayProps) {
   const {currentUser: userData} = useAppSelector((state: RootState) => state.auth);
   const { data: cartData } = useGetCartDetailByCustomerIdQuery(userData?.id!);
-  const { data: products } = useGetProductQuery();
+  const { data: products } = useGetProductInCartOfCustomerQuery(userData?.id!);
   const [updateCartDetail] = useUpdateCartDetailMutation();
   const [removeCartDetail] = useDeleteCartDetailMutation();
 
