@@ -136,18 +136,20 @@ export function ProductManager() {
                                             <td>{product?.quantity ?? 0}</td>
                                             <td>{new Date(product.created_at!).toLocaleString('vi-VN')}</td>
                                             <td>
-                                                <button
-                                                    onClick={() => handleDeleteProduct(product.id!)}
-                                                    className="bg-red-600 text-white px-3 py-1 rounded flex items-center"
-                                                >
-                                                    <FaTrash className="mr-1" /> Xóa
-                                                </button>
-                                                <button
-                                                    onClick={() => handleEditClick(product)}
-                                                    className="bg-blue-600 text-white px-3 py-1 rounded flex items-center mx-auto"
-                                                >
-                                                    <FaEdit className="mr-1" /> Sửa
-                                                </button>
+                                                <div className="flex">
+                                                    <button
+                                                        onClick={() => handleDeleteProduct(product.id!)}
+                                                        className="bg-red-600 text-white px-3 py-1 rounded flex items-center"
+                                                    >
+                                                        <FaTrash className="mr-1" /> Xóa
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleEditClick(product)}
+                                                        className="bg-blue-600 text-white px-3 py-1 rounded flex items-center mx-auto"
+                                                    >
+                                                        <FaEdit className="mr-1" /> Sửa
+                                                    </button>
+                                                </div>
                                             </td>
                                         </tr>
                                         ))}
