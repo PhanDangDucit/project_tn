@@ -279,7 +279,7 @@ export function ProductManager() {
                                                     />
                                                 </div>
 
-                                                {/* Giá khuyến mãi */}
+                                                {/* Giá khuyến mãi
                                                 <div className="mt-2">
                                                     <label className="label">Giá khuyến mãi </label>
                                                     <input
@@ -289,7 +289,7 @@ export function ProductManager() {
                                                         placeholder="Nhập giá khuyến mãi"
                                                         className="w-full bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border border-slate-200 rounded-md px-3 py-2"
                                                     />
-                                                </div>
+                                                </div> */}
 
                                                 {/* Số lượng tồn kho */}
                                                 <div className="mt-2">
