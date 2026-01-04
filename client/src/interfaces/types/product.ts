@@ -10,4 +10,5 @@ export type TProduct = {
     category_id?: string;
     quantity?: number;
     count_sold?: number;
+    inventory_count: number;
 }

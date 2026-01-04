@@ -8,6 +8,7 @@ export interface Product {
   fullDescription?: string;
   features?: string[];
   sizes?: string[];
+  inventory_count: number; 
 }
 
 export const allProducts: Product[] = [

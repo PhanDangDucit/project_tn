@@ -13,7 +13,7 @@ import { useCreateCartDetailMutation } from '~/services/cart/cart.service';
 
 export default function ProductDetail() {
   const auth = useAppSelector((state: RootState) => state.auth);
-  const {currentUser: userData} = useAppSelector((state: RootState) => state.auth);  
+  const { currentUser: userData } = useAppSelector((state: RootState) => state.auth);
   const { id } = useParams();
   const navigate = useNavigate();
   // const { addToCart } = useCart();
@@ -22,20 +22,20 @@ export default function ProductDetail() {
   // const [selectedSize, setSelectedSize] = useState<string>('');
   const [quantity, setQuantity] = useState(1);
   const [addedToCart, setAddedToCart] = useState(false);
-  const {data: productData} = useGetProductQuery();
-  const {data: productCategories} = useGetProductCategoriesQuery();
-  
+  const { data: productData } = useGetProductQuery();
+  const { data: productCategories } = useGetProductCategoriesQuery();
+
   const [category, setCategory] = useState<string>('');
 
-  const [product, setProduct] = useState<TProduct|null>(null);
+  const [product, setProduct] = useState<TProduct | null>(null);
   function formatPrice(price: string, currency: string) {
     return Number(price).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,') + currency;
   }
 
   useEffect(() => {
-    if(!productData) return;
+    if (!productData) return;
     const product = productData?.data?.find(p => Number(p.id!) === Number(id));
-    if(!product) {
+    if (!product) {
       setProduct(null);
       return;
     }
@@ -43,7 +43,7 @@ export default function ProductDetail() {
   }, [productData, id]);
 
   useEffect(() => {
-    if(product) {
+    if (product) {
       const categoryOfProduct = productCategories?.data?.find(cat => cat.id === product.category_id);
       setCategory(categoryOfProduct?.name!);
     }
@@ -53,8 +53,8 @@ export default function ProductDetail() {
   //   return num.toLocaleString('vi-VN');
   // };
 
-  const handleAddToCart = async() => {
-    if(!auth.loggedIn) {
+  const handleAddToCart = async () => {
+    if (!auth.loggedIn) {
       Toastify('Vui lòng đăng nhập để tiếp tục', 400);
       navigate('/login');
       return;
@@ -82,7 +82,7 @@ export default function ProductDetail() {
 
   if (!product) {
     return (
-      <ProductEmpty/>
+      <ProductEmpty />
     );
   }
 
@@ -93,7 +93,7 @@ export default function ProductDetail() {
           onClick={() => navigate('/')}
           className="flex items-center gap-2 text-sm hover:underline mb-6"
         >
-          <ChevronLeft className="w-4 h-4" /> 
+          <ChevronLeft className="w-4 h-4" />
           Quay lại
         </button>
 
@@ -106,7 +106,7 @@ export default function ProductDetail() {
                 className="w-full h-full object-cover"
               />
             </div>
-            
+
           </div>
 
           <div className="space-y-6">
@@ -155,41 +155,62 @@ export default function ProductDetail() {
 
               <div>
                 <h3 className="font-bold text-sm mb-3">SỐ LƯỢNG</h3>
+                <p className="text-sm text-gray-500">
+                  Còn lại: {product.inventory_count} sản phẩm
+                </p>
+
                 <div className="flex items-center gap-4">
                   <button
-                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                    onClick={() => {
+                      if (quantity > 1) {
+                        setQuantity(quantity - 1);
+                      }
+                    }}
                     className="w-10 h-10 border border-gray-300 rounded-full hover:bg-gray-50 transition"
                   >
                     -
                   </button>
+
                   <span className="text-lg font-medium min-w-10 text-center">{quantity}</span>
                   <button
-                    onClick={() => setQuantity(quantity + 1)}
-                    className="w-10 h-10 border border-gray-300 rounded-full hover:bg-gray-50 transition"
+                    onClick={() => {
+                      if (quantity < product.inventory_count) {
+                        setQuantity(quantity + 1);
+                      }
+                    }}
+                    disabled={quantity >= product.inventory_count}
+                    className="w-10 h-10 border border-gray-300 rounded-full hover:bg-gray-50 transition disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     +
                   </button>
+
                 </div>
               </div>
             </div>
 
             <button
-              onClick={() => handleAddToCart()}
-              className={`w-full py-4 rounded-full font-semibold transition flex items-center justify-center gap-2 ${
-                addedToCart
-                  ? 'bg-green-600 text-white hover:bg-green-700'
-                  : 'bg-black text-white hover:bg-gray-800'
-              }`}
+              onClick={handleAddToCart}
+              disabled={product.inventory_count === 0}
+              className={`w-full py-4 rounded-full font-semibold transition flex items-center justify-center gap-2 ${product.inventory_count === 0
+                  ? 'bg-gray-400 cursor-not-allowed'
+                  : addedToCart
+                    ? 'bg-green-600 text-white hover:bg-green-700'
+                    : 'bg-black text-white hover:bg-gray-800'
+                }`}
             >
-              {addedToCart ? (
-                <>
-                  <Check className="w-5 h-5" />
-                  ĐÃ THÊM VÀO GIỎ
-                </>
-              ) : (
-                'THÊM VÀO GIỎ HÀNG'
-              )}
+              {product.inventory_count === 0
+                ? 'HẾT HÀNG'
+                : addedToCart
+                  ? (
+                    <>
+                      <Check className="w-5 h-5" />
+                      ĐÃ THÊM VÀO GIỎ
+                    </>
+                  )
+                  : 'THÊM VÀO GIỎ HÀNG'
+              }
             </button>
+
 
             {/* <div className="space-y-2">
               <button className="w-full py-3 text-sm font-medium border-b border-gray-200 flex items-center justify-between hover:text-gray-600 transition">
@@ -203,7 +224,7 @@ export default function ProductDetail() {
             </div> */}
           </div>
         </div>
-        
+
         {/* Sản phẩm tương tự */}
         <ProductRelated product={product} />
       </div>
