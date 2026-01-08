@@ -1,4 +1,5 @@
 export type TProduct = {
+    inventory_count: number;
     id?:string;
     name?: string;
     created_at?: string;
