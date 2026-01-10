@@ -21,7 +21,8 @@ export default function ProductDetail() {
   const [addedToCart, setAddedToCart] = useState(false);
   const { data: product } = useGetProductByIdQuery(id ?? '0');
   const { data: productCategories } = useGetProductCategoriesQuery();
-
+  const stock = product?.data?.inventory_count ?? 0;
+  
   const [category, setCategory] = useState<string>('');
 
   function formatPrice(price: string, currency: string) {
@@ -41,13 +42,13 @@ export default function ProductDetail() {
       navigate('/login');
       return;
     }
-    
+
     //chặn vượt tồn kho 
-    if (quantity > product?.data?.inventory_count) {
+    if (quantity > stock) {
       Toastify('Số lượng vượt quá tồn kho', 400);
       return;
     }
-    
+
     try {
       await addProductToCart({
         product_id: product?.data?.id!,
@@ -102,10 +103,10 @@ export default function ProductDetail() {
             </div>
 
             {/*HIỂN THỊ SỐ HÀNG TỒN*/}
-            {product?.data?.inventory_count > 0 ? (
+            {stock > 0 ? (
               <p className="text-sm text-gray-600">
                 Còn lại: <span className="font-semibold">
-                  {product.data.inventory_count}
+                  {stock}
                 </span> sản phẩm
               </p>
             ) : (
@@ -163,7 +164,7 @@ export default function ProductDetail() {
                   <span className="text-lg font-medium min-w-10 text-center">{quantity}</span>
                   <button
                     onClick={() => {
-                      if (quantity < product?.data?.inventory_count) {
+                      if (quantity < stock) {
                         setQuantity(quantity + 1);
                       } else {
                         Toastify('Vượt quá số lượng tồn kho', 400);
@@ -179,7 +180,7 @@ export default function ProductDetail() {
             </div>
 
             <button
-              disabled={product?.data?.inventory_count === 0}
+              disabled={stock === 0}
               onClick={handleAddToCart}
               className={`w-full py-4 rounded-full font-semibold transition ${product?.data?.inventory_count === 0
                 ? 'bg-gray-400 cursor-not-allowed'
